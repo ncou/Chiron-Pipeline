@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Pipe;
 
-use Chiron\Pipe\Decorator\CallableMiddleware;
-use Chiron\Pipe\Decorator\CallableRequestHandlerDecorator;
-use Chiron\Pipe\Decorator\FixedResponseMiddleware;
-use Chiron\Pipe\Pipeline;
 use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
+use Chiron\Pipe\Decorator\CallableMiddleware;
+use Chiron\Pipe\Decorator\FixedResponseMiddleware;
+use Chiron\Pipe\Pipeline;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -65,17 +64,21 @@ class PipelineTest extends TestCase
                 return $response;
             });
 
-        $middlewareTwo =     new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-                $response->getBody()->write('foo');
+        $middlewareTwo = new CallableMiddleware(function ($request, $handler) {
+            $response = $handler->handle($request);
+            $response->getBody()->write('foo');
 
-                return $response;
-            });
+            return $response;
+        });
 
         $pipeline = new Pipeline();
 
-        $pipeline->pipeIf($middlewareOne, function(){ return false;});
-        $pipeline->pipeIf($middlewareTwo, function(){ return true;});
+        $pipeline->pipeIf($middlewareOne, function () {
+            return false;
+        });
+        $pipeline->pipeIf($middlewareTwo, function () {
+            return true;
+        });
         $pipeline->pipe(new FixedResponseMiddleware(new Response()));
 
         $response = $pipeline->handle($this->request);
@@ -100,9 +103,8 @@ class PipelineTest extends TestCase
 
     public function testWithOnlyOneBasicResponse()
     {
-
-            $response = new Response();
-            $response->getBody()->write('EMPTY');
+        $response = new Response();
+        $response->getBody()->write('EMPTY');
 
         $pipeline = new Pipeline();
         $pipeline->pipe(new FixedResponseMiddleware($response));
