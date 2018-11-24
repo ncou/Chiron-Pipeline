@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class PredicateDecorator implements MiddlewareInterface
+final class PredicateDecorator implements MiddlewareInterface
 {
     /**
      * @var MiddlewareInterface
@@ -21,19 +21,12 @@ class PredicateDecorator implements MiddlewareInterface
      */
     private $predicate;
 
-    /**
-     * @param MiddlewareInterface $middleware
-     * @param callable            $predicate
-     */
     public function __construct(MiddlewareInterface $middleware, callable $predicate)
     {
         $this->middleware = $middleware;
         $this->predicate = $predicate;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $predicate = $this->predicate;

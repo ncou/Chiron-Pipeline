@@ -68,11 +68,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-// TODO : renommer cette classe en Pipeline.
+//https://github.com/zer0php/middleware/blob/master/src/Middleware/Pipe/MiddlewarePipe.php
+
 class Pipeline implements RequestHandlerInterface
 {
     /**
-     * @var ContainerInterface
+     * @var null|ContainerInterface
      */
     private $container;
 
@@ -174,7 +175,7 @@ class Pipeline implements RequestHandlerInterface
         } elseif (is_string($middleware) && $middleware !== '') { // TODO : vérifier l'utilité du chaine vide !!!!
             // TODO : essayer de vérifier que container->has($middlewareName) retourne bien true, sinon lever une exception pour dire que l'alias n'existe pas dans le container.
             // TODO : attention on va avoir une erreur si le container est null. il faudra ajouter un test pour vérifier que $container est bien une instance de ContainerInterface !!!!!
-            return new LazyLoadingMiddleware($middleware, $this->container);
+            return new LazyLoadingMiddleware($this->container, $middleware);
         } else {
             throw new InvalidArgumentException(sprintf(
                 'Middleware "%s" is neither a string service name, a PHP callable, or a %s instance',

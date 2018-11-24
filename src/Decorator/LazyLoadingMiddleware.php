@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class LazyLoadingMiddleware implements MiddlewareInterface
+final class LazyLoadingMiddleware implements MiddlewareInterface
 {
     /**
      * @var ContainerInterface
@@ -23,18 +23,13 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     private $middlewareName;
 
     public function __construct(
-        string $middlewareName,
-        ContainerInterface $container
+        ContainerInterface $container,
+        string $middlewareName
     ) {
         $this->container = $container;
         $this->middlewareName = $middlewareName;
     }
 
-    /**
-     * Support a instance of MiddlewareInterface or a callable.
-     *
-     * @throws InvalidArgumentException for invalid middleware types pulled from the container
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // retrieve the middleware in the container. It could be a : MiddlewareInterface object, or a callable

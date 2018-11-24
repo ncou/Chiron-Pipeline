@@ -30,7 +30,7 @@
             "@phpstan"
         ],
         "phpunit": "phpunit --colors=always",
-        "phpstan": "phpstan analyse src --level=0",
+        "phpstan": "phpstan analyse src --level=7",
         "test-coverage": "phpunit --coverage-clover clover.xml"
     },
     "minimum-stability": "dev",

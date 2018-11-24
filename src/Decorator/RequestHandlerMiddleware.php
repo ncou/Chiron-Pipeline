@@ -9,20 +9,20 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class FixedResponseMiddleware implements MiddlewareInterface
+class RequestHandlerMiddleware implements MiddlewareInterface
 {
     /**
-     * @var ResponseInterface
+     * @var RequestHandlerInterface
      */
-    private $fixedResponse;
+    private $handler;
 
-    public function __construct(ResponseInterface $response)
+    public function __construct(RequestHandlerInterface $handler)
     {
-        $this->fixedResponse = $response;
+        $this->handler = $handler;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $this->fixedResponse;
+        return $this->handler->handle($request);
     }
 }
