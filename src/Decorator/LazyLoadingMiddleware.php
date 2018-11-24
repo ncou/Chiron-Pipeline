@@ -41,7 +41,12 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
         $middleware = $this->container->get($this->middlewareName);
 
         if (! $middleware instanceof MiddlewareInterface) {
-            throw new InvalidArgumentException('The middleware present in the container should be a Psr\Http\Server\MiddlewareInterface instance');
+            throw new InvalidArgumentException(sprintf(
+            'Service "%s" did not to resolve to a %s instance; resolved to "%s"',
+            $this->middlewareName,
+            MiddlewareInterface::class,
+            is_object($middleware) ? get_class($middleware) : gettype($middleware)
+        ));
         }
 
         return $middleware->process($request, $handler);

@@ -25,6 +25,7 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->method('process')
             ->with($requestMock, $handlerMock)
             ->willReturn($responseMock);
+
         $containerMock = $this->createMock(ContainerInterface::class);
 
         $containerMock
@@ -41,5 +42,51 @@ class LazyLoadingMiddlewareTest extends TestCase
         $middleware = new LazyLoadingMiddleware($containerMock, 'testMiddleware');
         $response = $middleware->process($requestMock, $handlerMock);
         $this->assertSame($responseMock, $response);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The middleware "foobar" is not present in the container
+     */
+    public function testExceptionMiddlewareNotFoundInTheContainer()
+    {
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $handlerMock = $this->createMock(RequestHandlerInterface::class);
+
+        $containerMock = $this->createMock(ContainerInterface::class);
+        $containerMock
+            ->expects($this->once())
+            ->method('has')
+            ->with('foobar')
+            ->willReturn(false);
+
+        $middleware = new LazyLoadingMiddleware($containerMock, 'foobar');
+        $response = $middleware->process($requestMock, $handlerMock);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testResolvedMiddlewareIsNot_A_ValidType()
+    {
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $handlerMock = $this->createMock(RequestHandlerInterface::class);
+
+        $containerMock = $this->createMock(ContainerInterface::class);
+
+        $containerMock
+            ->expects($this->once())
+            ->method('has')
+            ->with('foo')
+            ->willReturn(true);
+
+        $containerMock
+            ->expects($this->once())
+            ->method('get')
+            ->with('foo')
+            ->willReturn('bar');
+
+        $middleware = new LazyLoadingMiddleware($containerMock, 'foo');
+        $response = $middleware->process($requestMock, $handlerMock);
     }
 }
