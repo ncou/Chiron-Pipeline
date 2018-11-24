@@ -172,9 +172,7 @@ class Pipeline implements RequestHandlerInterface
             return $middleware;
         } elseif (is_callable($middleware)) {
             return new CallableMiddleware($middleware);
-        } elseif (is_string($middleware) && $middleware !== '') { // TODO : vérifier l'utilité du chaine vide !!!!
-            // TODO : essayer de vérifier que container->has($middlewareName) retourne bien true, sinon lever une exception pour dire que l'alias n'existe pas dans le container.
-            // TODO : attention on va avoir une erreur si le container est null. il faudra ajouter un test pour vérifier que $container est bien une instance de ContainerInterface !!!!!
+        } elseif (is_string($middleware) && $this->container instanceof ContainerInterface) {
             return new LazyLoadingMiddleware($this->container, $middleware);
         } else {
             throw new InvalidArgumentException(sprintf(

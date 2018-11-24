@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use InvalidArgumentException;
 
 final class LazyLoadingMiddleware implements MiddlewareInterface
 {
@@ -32,27 +33,17 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // retrieve the middleware in the container. It could be a : MiddlewareInterface object, or a callable
-        // TODO : lever une exception si le type de l'objet n'est pas un middlewareinterface ou un callable !!!!!
-        $entry = $this->container->get($this->middlewareName);
-
-        // TODO : gérer le cas ou il s'agit d'une string et que cette classe existe => https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L43
-
-        // TODO : vérifier si l'utilisation d'un callable est suffisante ou si il faut faire comme Zend.
-        if (is_callable($entry)) {
-            return call_user_func_array($entry, [$request, $handler]);
+        if (! $this->container->has($this->middlewareName)) {
+            throw new InvalidArgumentException(sprintf('The middleware "%s" is not present in the container', $this->middlewareName));
         }
 
-        if ($entry instanceof MiddlewareInterface) {
-            return $entry->process($request, $handler);
+        // retrieve the middleware in the container (it MUST be a MiddlewareInterface instance).
+        $middleware = $this->container->get($this->middlewareName);
+
+        if (! $middleware instanceof MiddlewareInterface) {
+            throw new InvalidArgumentException('The middleware present in the container should be a Psr\Http\Server\MiddlewareInterface instance');
         }
 
-        // Try to inject the dependency injection container in the middleware
-        /*
-        if (is_callable([$middleware, 'setContainer']) && $this->container instanceof ContainerInterface) {
-            $middleware->setContainer($this->container);
-        }*/
-
-        throw new \InvalidArgumentException('The middleware present in the container should be a PHP callable or a Psr\Http\Server\MiddlewareInterface instance');
+        return $middleware->process($request, $handler);
     }
 }

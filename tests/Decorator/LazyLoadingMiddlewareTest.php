@@ -26,6 +26,13 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->with($requestMock, $handlerMock)
             ->willReturn($responseMock);
         $containerMock = $this->createMock(ContainerInterface::class);
+
+        $containerMock
+            ->expects($this->once())
+            ->method('has')
+            ->with('testMiddleware')
+            ->willReturn(true);
+
         $containerMock
             ->expects($this->once())
             ->method('get')
