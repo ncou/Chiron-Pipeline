@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Pipe;
 
-use Psr\Container\ContainerInterface;
 use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
@@ -12,6 +11,7 @@ use Chiron\Pipe\Decorator\CallableMiddleware;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Pipeline;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class PipelineTest extends TestCase
@@ -86,11 +86,11 @@ class PipelineTest extends TestCase
     public function testPipeLazyMiddleware()
     {
         $middleware = new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-                $response->getBody()->write('foobar');
+            $response = $handler->handle($request);
+            $response->getBody()->write('foobar');
 
-                return $response;
-            });
+            return $response;
+        });
 
         $containerMock = $this->createMock(ContainerInterface::class);
 
