@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Pipe;
 
+use Chiron\Pipe\Decorator\CallableMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Chiron\Pipe\Decorator\CallableMiddleware;
 
 class CallableMiddlewareTest extends TestCase
 {
@@ -17,9 +17,10 @@ class CallableMiddlewareTest extends TestCase
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $handlerMock = $this->createMock(RequestHandlerInterface::class);
 
-        $callable = function($request, $handler) use($requestMock, $handlerMock) {
+        $callable = function ($request, $handler) use ($requestMock, $handlerMock) {
             $this->assertSame($requestMock, $request);
             $this->assertSame($handlerMock, $handler);
+
             return $this->createMock(ResponseInterface::class);
         };
 

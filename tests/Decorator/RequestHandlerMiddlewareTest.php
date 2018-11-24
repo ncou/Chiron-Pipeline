@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Pipe;
 
+use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
 
 class RequestHandlerMiddlewareTest extends TestCase
 {
