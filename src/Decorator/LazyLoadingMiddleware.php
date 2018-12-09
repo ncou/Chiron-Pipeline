@@ -14,7 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class LazyLoadingMiddleware implements MiddlewareInterface
 {
     /**
-     * @var ContainerInterface
+     * @var ContainerInterface|null
      */
     private $container;
 
