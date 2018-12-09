@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Chiron\Tests\Pipe;
 
 use Chiron\Pipe\Decorator\LazyLoadingMiddleware;
+use Chiron\Tests\Pipe\Fixtures\FoobarBadClass;
+use Chiron\Tests\Pipe\Fixtures\FoobarClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Chiron\Tests\Pipe\Fixtures\FoobarClass;
-use Chiron\Tests\Pipe\Fixtures\FoobarBadClass;
 
 class LazyLoadingMiddlewareTest extends TestCase
 {
