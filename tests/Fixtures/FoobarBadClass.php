@@ -6,5 +6,4 @@ namespace Chiron\Tests\Pipe\Fixtures;
 
 class FoobarBadClass
 {
-
 }

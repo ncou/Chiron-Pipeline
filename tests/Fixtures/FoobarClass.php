@@ -15,5 +15,4 @@ class FoobarClass implements MiddlewareInterface
     {
         return new ResponseMock();
     }
-
 }

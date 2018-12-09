@@ -61,11 +61,12 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
      *
      * @param string $service
      */
-    private function hasService(string $service) : bool
+    private function hasService(string $service): bool
     {
         if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
             return true;
         }
+
         return class_exists($service);
     }
 
@@ -74,6 +75,7 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
      * autoloadable class name.
      *
      * @param string $service
+     *
      * @return mixed
      */
     private function getService(string $service)
@@ -81,6 +83,7 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
         if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
             return $this->container->get($service);
         }
+
         return new $service();
     }
 }
