@@ -24,21 +24,24 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
     private $middlewareName;
 
     public function __construct(
-        ContainerInterface $container,
-        string $middlewareName
+        string $middlewareName,
+        ContainerInterface $container = null
     ) {
-        $this->container = $container;
         $this->middlewareName = $middlewareName;
+        $this->container = $container;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (! $this->container->has($this->middlewareName)) {
-            throw new InvalidArgumentException(sprintf('The middleware "%s" is not present in the container', $this->middlewareName));
+        if (! $this->hasService($this->middlewareName)) {
+            throw new InvalidArgumentException(sprintf(
+                'Service "%s" is not registered in the container or does not resolve to an autoloadable class name',
+                $this->middlewareName
+            ));
         }
 
         // retrieve the middleware in the container (it MUST be a MiddlewareInterface instance).
-        $middleware = $this->container->get($this->middlewareName);
+        $middleware = $this->getService($this->middlewareName);
 
         if (! $middleware instanceof MiddlewareInterface) {
             throw new InvalidArgumentException(sprintf(
@@ -50,5 +53,34 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
         }
 
         return $middleware->process($request, $handler);
+    }
+
+    /**
+     * Returns true if the service is in the container, or resolves to an
+     * autoloadable class name.
+     *
+     * @param string $service
+     */
+    private function hasService(string $service) : bool
+    {
+        if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
+            return true;
+        }
+        return class_exists($service);
+    }
+
+    /**
+     * Returns true if the service is in the container, or resolves to an
+     * autoloadable class name.
+     *
+     * @param string $service
+     * @return mixed
+     */
+    private function getService(string $service)
+    {
+        if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
+            return $this->container->get($service);
+        }
+        return new $service();
     }
 }

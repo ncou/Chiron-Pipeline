@@ -95,12 +95,11 @@ class Pipeline implements RequestHandlerInterface
             return $middleware;
         } elseif (is_callable($middleware)) {
             return new CallableMiddleware($middleware);
-        } elseif (is_string($middleware) && $this->container instanceof ContainerInterface) {
-            // TODO : attention gérer le cas ou c'est une chaine mais pas présente dans le container, dans ce cas on instancie directement la classe => https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L62
-            return new LazyLoadingMiddleware($this->container, $middleware);
+        } elseif (is_string($middleware)) {
+            return new LazyLoadingMiddleware($middleware, $this->container);
         } else {
             throw new InvalidArgumentException(sprintf(
-                'Middleware "%s" is neither a string service name, a PHP callable, or a %s instance',
+                'Middleware "%s" is neither a string service name, an autoloadable class name, a PHP callable, or a %s instance',
                 is_object($middleware) ? get_class($middleware) : gettype($middleware),
                 MiddlewareInterface::class
             ));

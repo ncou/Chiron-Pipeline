@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Pipe;
+namespace Chiron\Tests\Pipe;
 
 use Chiron\Pipe\Decorator\CallableMiddleware;
 use PHPUnit\Framework\TestCase;

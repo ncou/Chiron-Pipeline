@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Pipe;
+namespace Chiron\Tests\Pipe;
 
 use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
@@ -95,7 +95,6 @@ class PipelineTest extends TestCase
         $containerMock = $this->createMock(ContainerInterface::class);
 
         $containerMock
-            ->expects($this->once())
             ->method('has')
             ->with('middlewareName')
             ->willReturn(true);
