@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Chiron\Pipe;
 
 use Chiron\Pipe\Decorator\CallableMiddleware;
+use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Decorator\LazyLoadingMiddleware;
 use Chiron\Pipe\Decorator\PredicateDecorator;
 use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
-use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use Psr\Container\ContainerInterface;
@@ -44,6 +44,7 @@ class Pipeline implements RequestHandlerInterface
 
     /**
      * @param string|callable|MiddlewareInterface $middlewares It could also be an array of such arguments.
+     *
      * @return self
      */
     public function pipe($middlewares): self
@@ -64,7 +65,8 @@ class Pipeline implements RequestHandlerInterface
 
     /**
      * @param string|callable|MiddlewareInterface $middlewares It could also be an array of such arguments.
-     * @param callable                                                          $predicate   Used to determine if the middleware should be executed
+     * @param callable                            $predicate   Used to determine if the middleware should be executed
+     *
      * @return self
      */
     public function pipeIf($middlewares, callable $predicate): self
@@ -82,7 +84,9 @@ class Pipeline implements RequestHandlerInterface
 
     /**
      * Add middleware to the beginning of the stack (Prepend).
+     *
      * @param string|callable|MiddlewareInterface $middleware It can't be an array.
+     *
      * @return self
      */
     // TODO : permettre de passer des tableaux de middlewares à cette méthode.

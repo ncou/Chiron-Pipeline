@@ -210,7 +210,6 @@ class PipelineTest extends TestCase
         $response = new Response();
         $response->getBody()->write('SUCCESS');
 
-
         $handlerMock = $this->createMock(RequestHandlerInterface::class);
 
         $handlerMock
@@ -224,11 +223,9 @@ class PipelineTest extends TestCase
 
         $result = $pipeline->handle($this->request);
 
-
         $this->assertSame($response, $result);
         $this->assertEquals('SUCCESS', (string) $result->getBody());
     }
-
 
     public function testPipeOnTopMiddleware()
     {
@@ -291,5 +288,4 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe(123456);
     }
-
 }
