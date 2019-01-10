@@ -43,7 +43,7 @@ class Pipeline implements RequestHandlerInterface
     }
 
     /**
-     * @param string|callable|MiddlewareInterface $middlewares It could also be an array of such arguments.
+     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middlewares It could also be an array of such arguments.
      *
      * @return self
      */
@@ -64,7 +64,7 @@ class Pipeline implements RequestHandlerInterface
     }
 
     /**
-     * @param string|callable|MiddlewareInterface $middlewares It could also be an array of such arguments.
+     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middlewares It could also be an array of such arguments.
      * @param callable                            $predicate   Used to determine if the middleware should be executed
      *
      * @return self
@@ -85,7 +85,7 @@ class Pipeline implements RequestHandlerInterface
     /**
      * Add middleware to the beginning of the stack (Prepend).
      *
-     * @param string|callable|MiddlewareInterface $middleware It can't be an array.
+     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middleware It can't be an array.
      *
      * @return self
      */
@@ -113,7 +113,7 @@ class Pipeline implements RequestHandlerInterface
     /**
      * Decorate the middleware if necessary.
      *
-     * @param string|callable|MiddlewareInterface $middleware Doesn't support array !
+     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middleware Doesn't support array !
      *
      * @return MiddlewareInterface
      */
