@@ -132,9 +132,9 @@ class Pipeline implements RequestHandlerInterface
             return new LazyLoadingMiddleware($middleware, $this->container);
         } else {
             throw new InvalidArgumentException(sprintf(
-                'Middleware "%s" is neither a string service name, an autoloadable class name, a PHP callable, or a %s instance',
+                'Middleware "%s" is neither a string service name, an autoloadable class name, a PHP callable, or an instance of %s/%s/%s',
                 is_object($middleware) ? get_class($middleware) : gettype($middleware),
-                MiddlewareInterface::class
+                MiddlewareInterface::class, ResponseInterface::class, RequestHandlerInterface::class
             ));
         }
     }
