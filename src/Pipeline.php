@@ -45,6 +45,7 @@ class Pipeline implements RequestHandlerInterface
      * Add middleware to the bottom of the stack (Append).
      *
      * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middlewares It could also be an array of such arguments.
+     * @param bool $addOnTop Force the middleware position on top of the stack
      *
      * @return self
      */
