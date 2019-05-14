@@ -131,39 +131,6 @@ class PipelineTest extends TestCase
         $this->assertEquals('foobar', (string) $response->getBody());
     }
 
-    public function testPipeIfMiddlewares()
-    {
-        $middlewareOne =
-            new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-                $response->getBody()->write('bar');
-
-                return $response;
-            });
-
-        $middlewareTwo = new CallableMiddleware(function ($request, $handler) {
-            $response = $handler->handle($request);
-            $response->getBody()->write('foo');
-
-            return $response;
-        });
-
-        $pipeline = new Pipeline();
-
-        $pipeline->pipeIf($middlewareOne, function () {
-            return false;
-        });
-        $pipeline->pipeIf($middlewareTwo, function () {
-            return true;
-        });
-        $pipeline->pipe(new FixedResponseMiddleware(new Response()));
-
-        $response = $pipeline->handle($this->request);
-
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertEquals('foo', (string) $response->getBody());
-    }
-
     /**
      * @expectedException \OutOfBoundsException
      * @expectedExceptionMessage Reached end of middleware stack. Does your controller return a response ?
@@ -244,6 +211,36 @@ class PipelineTest extends TestCase
         $middlewaresArray = $this->readAttribute($pipeline, 'middlewares');
 
         $this->assertSame($middleware_2, $middlewaresArray[0]);
+    }
+
+    public function testPipeOnTopMiddlewareArray()
+    {
+        $response = new Response();
+        $response->getBody()->write('FIRST MIDDLEWARE');
+        $middleware_1 = new FixedResponseMiddleware($response);
+
+        $response = new Response();
+        $response->getBody()->write('MOVE ON TOP_1');
+        $middleware_2 = new FixedResponseMiddleware($response);
+
+        $response = new Response();
+        $response->getBody()->write('MOVE ON TOP_2');
+        $middleware_3 = new FixedResponseMiddleware($response);
+
+        $response = new Response();
+        $response->getBody()->write('MOVE ON TOP_3');
+        $middleware_4 = new FixedResponseMiddleware($response);
+
+        $pipeline = new Pipeline();
+        $pipeline->pipe($middleware_1);
+        $pipeline->pipeOnTop([$middleware_2, $middleware_3, $middleware_4]);
+
+        $middlewaresArray = $this->readAttribute($pipeline, 'middlewares');
+
+        $this->assertSame($middleware_2, $middlewaresArray[0]);
+        $this->assertSame($middleware_3, $middlewaresArray[1]);
+        $this->assertSame($middleware_4, $middlewaresArray[2]);
+        $this->assertSame($middleware_1, $middlewaresArray[3]);
     }
 
     public function testPipeAtBottomByDefaultMiddleware()

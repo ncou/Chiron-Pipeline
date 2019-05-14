@@ -7,7 +7,6 @@ namespace Chiron\Pipe;
 use Chiron\Pipe\Decorator\CallableMiddleware;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Decorator\LazyLoadingMiddleware;
-use Chiron\Pipe\Decorator\PredicateDecorator;
 use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
 use InvalidArgumentException;
 use OutOfBoundsException;
@@ -43,40 +42,28 @@ class Pipeline implements RequestHandlerInterface
     }
 
     /**
+     * Add middleware to the bottom of the stack (Append).
+     *
      * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middlewares It could also be an array of such arguments.
      *
      * @return self
      */
-    public function pipe($middlewares): self
-    {
-        //Add middleware to the end of the stack => Append
-        //array_push($this->middlewares, $this->decorate($middleware));
-
-        if (! is_array($middlewares)) {
-            $middlewares = [$middlewares];
-        }
-
-        foreach ($middlewares as $middleware) {
-            $this->middlewares[] = $this->decorate($middleware);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middlewares It could also be an array of such arguments.
-     * @param callable                            $predicate   Used to determine if the middleware should be executed
-     *
-     * @return self
-     */
-    public function pipeIf($middlewares, callable $predicate): self
+    public function pipe($middlewares, bool $addOnTop = false): self
     {
         if (! is_array($middlewares)) {
             $middlewares = [$middlewares];
         }
 
         foreach ($middlewares as $middleware) {
-            $this->middlewares[] = new PredicateDecorator($this->decorate($middleware), $predicate);
+            $decorated = $this->decorate($middleware);
+
+            if ($addOnTop) {
+                //prepend Middleware
+                array_unshift($this->middlewares, $decorated);
+            } else {
+                // append Middleware
+                array_push($this->middlewares, $decorated);
+            }
         }
 
         return $this;
@@ -85,17 +72,18 @@ class Pipeline implements RequestHandlerInterface
     /**
      * Add middleware to the beginning of the stack (Prepend).
      *
-     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middleware It can't be an array.
+     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middleware It could also be an array of such arguments.
      *
      * @return self
      */
-    // TODO : permettre de passer des tableaux de middlewares à cette méthode.
-    // TODO : créer aussi une méthode pipeOnTopIf()
-    public function pipeOnTop($middleware): self
+    public function pipeOnTop($middlewares): self
     {
-        array_unshift($this->middlewares, $this->decorate($middleware));
+        // used to keep the right order when adding an array to the top of the middlewares stack.
+        if (is_array($middlewares)) {
+            $middlewares = array_reverse($middlewares);
+        }
 
-        return $this;
+        return $this->pipe($middlewares, true);
     }
 
     /**
