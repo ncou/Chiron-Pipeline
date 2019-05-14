@@ -72,7 +72,7 @@ class Pipeline implements RequestHandlerInterface
     /**
      * Add middleware to the beginning of the stack (Prepend).
      *
-     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middleware It could also be an array of such arguments.
+     * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middlewares It could also be an array of such arguments.
      *
      * @return self
      */
