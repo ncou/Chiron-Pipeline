@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class LazyLoadingMiddleware implements MiddlewareInterface
+class LazyLoadingMiddleware implements MiddlewareInterface
 {
     /**
      * @var ContainerInterface|null
@@ -61,6 +61,7 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
      *
      * @param string $service
      */
+    // https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L37
     private function hasService(string $service): bool
     {
         if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
@@ -78,6 +79,8 @@ final class LazyLoadingMiddleware implements MiddlewareInterface
      *
      * @return mixed
      */
+    // TODO : modifier le doc bloc pour mettre une vraie description.
+    // https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L56
     private function getService(string $service)
     {
         if ($this->container instanceof ContainerInterface && $this->container->has($service)) {

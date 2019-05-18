@@ -9,7 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class CallableMiddleware implements MiddlewareInterface
+use function call_user_func;
+
+class CallableMiddleware implements MiddlewareInterface
 {
     /**
      * @var callable
@@ -23,8 +25,6 @@ final class CallableMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $callable = $this->callable;
-
-        return $callable($request, $handler);
+        return call_user_func($this->callable, $request, $handler);
     }
 }

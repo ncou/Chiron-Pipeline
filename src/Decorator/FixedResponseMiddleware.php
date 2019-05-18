@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class FixedResponseMiddleware implements MiddlewareInterface
+class FixedResponseMiddleware implements MiddlewareInterface
 {
     /**
      * @var ResponseInterface
