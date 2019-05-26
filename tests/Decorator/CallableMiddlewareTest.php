@@ -27,4 +27,22 @@ class CallableMiddlewareTest extends TestCase
         $middleware = new CallableMiddleware($callable);
         $middleware->process($requestMock, $handlerMock);
     }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Decorated callable middleware of type Closure failed to produce a response.
+     */
+    public function testGivenCallback_ThrowException()
+    {
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $handlerMock = $this->createMock(RequestHandlerInterface::class);
+
+        $callable = function () {
+            return "Bad response - it's not an ResponseInterface object !!!";
+        };
+
+        $middleware = new CallableMiddleware($callable);
+        $middleware->process($requestMock, $handlerMock);
+
+    }
 }

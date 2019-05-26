@@ -45,11 +45,11 @@ class LazyLoadingMiddleware implements MiddlewareInterface
 
         if (! $middleware instanceof MiddlewareInterface) {
             throw new InvalidArgumentException(sprintf(
-            'Service "%s" did not to resolve to a %s instance; resolved to "%s"',
-            $this->middlewareName,
-            MiddlewareInterface::class,
-            is_object($middleware) ? get_class($middleware) : gettype($middleware)
-        ));
+                'Service "%s" did not to resolve to a %s instance; resolved to "%s"',
+                $this->middlewareName,
+                MiddlewareInterface::class,
+                is_object($middleware) ? get_class($middleware) : gettype($middleware)
+            ));
         }
 
         return $middleware->process($request, $handler);

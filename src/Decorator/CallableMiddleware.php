@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use LogicException;
 
 use function call_user_func;
 
@@ -25,6 +26,15 @@ class CallableMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return call_user_func($this->callable, $request, $handler);
+        $response = call_user_func($this->callable, $request, $handler);
+
+        if (! $response instanceof ResponseInterface) {
+            throw new LogicException(sprintf(
+                'Decorated callable middleware of type %s failed to produce a response.',
+                is_object($this->callable) ? get_class($this->callable) : gettype($this->callable)
+            ));
+        }
+
+        return $response;
     }
 }
