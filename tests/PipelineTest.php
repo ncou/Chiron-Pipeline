@@ -39,7 +39,7 @@ class PipelineTest extends TestCase
     public function testExecuteEmpty()
     {
         $pipeline = new Pipeline();
-        $response = $pipeline->handle($this->request);
+        $response = $pipeline->dispatch($this->request);
     }
 
     public function testPipeMiddlewares()
@@ -64,7 +64,7 @@ class PipelineTest extends TestCase
 
         $pipeline->pipe($middlewares);
 
-        $response = $pipeline->handle($this->request);
+        $response = $pipeline->dispatch($this->request);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals('foobar', (string) $response->getBody());
@@ -92,7 +92,7 @@ class PipelineTest extends TestCase
 
         $pipeline->pipe($middlewares);
 
-        $response = $pipeline->handle($this->request);
+        $response = $pipeline->dispatch($this->request);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals('foobar', (string) $response->getBody());
@@ -125,7 +125,7 @@ class PipelineTest extends TestCase
         $pipeline->pipe('middlewareName');
         $pipeline->pipe(new FixedResponseMiddleware(new Response(200)));
 
-        $response = $pipeline->handle($this->request);
+        $response = $pipeline->dispatch($this->request);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals('foobar', (string) $response->getBody());
@@ -139,7 +139,7 @@ class PipelineTest extends TestCase
     {
         $pipeline = new Pipeline();
 
-        $response = $pipeline->handle($this->request);
+        $response = $pipeline->dispatch($this->request);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals('foo', (string) $response->getBody());
@@ -154,7 +154,7 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe($middleware);
 
-        $response = $pipeline->handle($this->request);
+        $response = $pipeline->dispatch($this->request);
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals('EMPTY', (string) $response->getBody());
     }
@@ -167,7 +167,7 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe($response);
 
-        $result = $pipeline->handle($this->request);
+        $result = $pipeline->dispatch($this->request);
         $this->assertInstanceOf(ResponseInterface::class, $result);
         $this->assertEquals('SUCCESS', (string) $result->getBody());
     }
@@ -188,7 +188,7 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe($handlerMock);
 
-        $result = $pipeline->handle($this->request);
+        $result = $pipeline->dispatch($this->request);
 
         $this->assertSame($response, $result);
         $this->assertEquals('SUCCESS', (string) $result->getBody());
@@ -285,4 +285,5 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe(123456);
     }
+
 }

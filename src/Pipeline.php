@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Pipeline implements RequestHandlerInterface
+class Pipeline
 {
     /**
      * @var null|ContainerInterface
@@ -27,11 +27,6 @@ class Pipeline implements RequestHandlerInterface
      * @var array MiddlewareInterface[]
      */
     private $middlewares = [];
-
-    /**
-     * @var int
-     */
-    private $index = 0;
 
     /**
      * @param null|ContainerInterface $container Used for the LazyLoading decorator.
@@ -88,18 +83,6 @@ class Pipeline implements RequestHandlerInterface
     }
 
     /**
-     * Remove all the piped middlewares.
-     *
-     * @return self
-     */
-    public function flush(): self
-    {
-        $this->middlewares = [];
-
-        return $this;
-    }
-
-    /**
      * Decorate the middleware if necessary.
      *
      * @param string|callable|MiddlewareInterface|RequestHandlerInterface|ResponseInterface $middleware Doesn't support array !
@@ -117,15 +100,27 @@ class Pipeline implements RequestHandlerInterface
             return new FixedResponseMiddleware($middleware);
         } elseif (is_callable($middleware)) {
             return new CallableMiddleware($middleware);
-        } elseif (is_string($middleware)) {
+        } elseif (is_string($middleware)) { // TODO ajouter aussi un test pour vérifier que la chaine n'est pas vide !!! "&& $middleware !== ''"
             return new LazyLoadingMiddleware($middleware, $this->container);
         } else {
             throw new InvalidArgumentException(sprintf(
-                'Middleware "%s" is neither a string service name, an autoloadable class name, a PHP callable, or an instance of %s/%s/%s',
+                'Middleware "%s" is neither a string service name, a PHP callable, or an instance of %s/%s/%s',
                 is_object($middleware) ? get_class($middleware) : gettype($middleware),
                 MiddlewareInterface::class, ResponseInterface::class, RequestHandlerInterface::class
             ));
         }
+    }
+
+    /**
+     * Remove all the piped middlewares.
+     *
+     * @return self
+     */
+    public function flush(): self
+    {
+        $this->middlewares = [];
+
+        return $this;
     }
 
     /**
@@ -135,14 +130,11 @@ class Pipeline implements RequestHandlerInterface
      *
      * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    // TODO : passer en facultatif un paramétre supplémentaire : $response, ce qui permettra d'initialiser le dernier middleware qui sera la réponse par défaut si aucun middleware ne retourne de réponse.
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
-        if ($this->index >= count($this->middlewares)) {
-            throw new OutOfBoundsException('Reached end of middleware stack. Does your controller return a response ?');
-        }
+        $dispatcher = new Dispatcher($this->middlewares);
 
-        $middleware = $this->middlewares[$this->index++];
-
-        return $middleware->process($request, $this);
+        return $dispatcher->handle($request);
     }
 }
