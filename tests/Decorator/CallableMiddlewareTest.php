@@ -43,6 +43,5 @@ class CallableMiddlewareTest extends TestCase
 
         $middleware = new CallableMiddleware($callable);
         $middleware->process($requestMock, $handlerMock);
-
     }
 }

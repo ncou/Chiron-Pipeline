@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Chiron\Pipe\Decorator;
 
+use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use LogicException;
-
 use function call_user_func;
 
 class CallableMiddleware implements MiddlewareInterface
