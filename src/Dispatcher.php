@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace Chiron\Pipe;
 
-use Chiron\Pipe\Decorator\CallableMiddleware;
-use Chiron\Pipe\Decorator\FixedResponseMiddleware;
-use Chiron\Pipe\Decorator\LazyLoadingMiddleware;
-use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
-use InvalidArgumentException;
-use OutOfBoundsException;
 use LogicException;
-use Psr\Container\ContainerInterface;
+use OutOfBoundsException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

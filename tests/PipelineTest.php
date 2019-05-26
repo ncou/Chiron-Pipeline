@@ -285,5 +285,4 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe(123456);
     }
-
 }
