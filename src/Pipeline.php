@@ -9,7 +9,6 @@ use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Decorator\LazyLoadingMiddleware;
 use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
 use InvalidArgumentException;
-use OutOfBoundsException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

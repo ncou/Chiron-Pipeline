@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace Chiron\Tests\Pipe;
 
-use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
 use Chiron\Pipe\Decorator\CallableMiddleware;
-use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Dispatcher;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 class DispatcherTest extends TestCase
@@ -69,8 +64,8 @@ class DispatcherTest extends TestCase
     public function testDispatcherThrowExceptionForInvalidMultipleArguments()
     {
         $middleware = new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-            });
+            $response = $handler->handle($request);
+        });
 
         $dispatcher = new Dispatcher($middleware, 'invalid type');
 
@@ -84,8 +79,8 @@ class DispatcherTest extends TestCase
     public function testDispatcherThrowExceptionForInvalidSingleArrayArgument()
     {
         $middleware = new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-            });
+            $response = $handler->handle($request);
+        });
 
         $dispatcher = new Dispatcher([$middleware, 'invalid type']);
 
