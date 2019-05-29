@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Chiron\Pipe;
 
-use LogicException;
 use OutOfBoundsException;
+use UnexpectedValueException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+// TODO : renommer la classe en PipeHandler
 class Dispatcher implements RequestHandlerInterface
 {
     /**
@@ -52,7 +53,7 @@ class Dispatcher implements RequestHandlerInterface
         $middleware = $this->middlewares[$this->index++];
 
         if (! $middleware instanceof MiddlewareInterface) {
-            throw new LogicException(sprintf(
+            throw new UnexpectedValueException(sprintf(
                 'Middleware "%s" is not an instance of %s',
                 is_object($middleware) ? get_class($middleware) : gettype($middleware),
                 MiddlewareInterface::class

@@ -58,7 +58,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \UnexpectedValueException
      * @expectedExceptionMessage is not an instance of Psr\Http\Server\MiddlewareInterface
      */
     public function testDispatcherThrowExceptionForInvalidMultipleArguments()
@@ -73,7 +73,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \UnexpectedValueException
      * @expectedExceptionMessage is not an instance of Psr\Http\Server\MiddlewareInterface
      */
     public function testDispatcherThrowExceptionForInvalidSingleArrayArgument()
@@ -88,7 +88,7 @@ class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \UnexpectedValueException
      * @expectedExceptionMessage is not an instance of Psr\Http\Server\MiddlewareInterface
      */
     public function testDispatcherThrowExceptionForInvalidSingleArgument()
