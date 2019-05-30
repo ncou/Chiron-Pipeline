@@ -6,7 +6,7 @@
     "homepage": "https://github.com/ncou/Chiron-Pipeline",
     "license": "MIT",
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "psr/container": "^1.0",
