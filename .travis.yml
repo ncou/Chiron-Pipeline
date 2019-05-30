@@ -10,7 +10,7 @@ install:
   # Install composer packages
   - travis_retry composer install --no-interaction --ignore-platform-reqs
   # Install coveralls.phar
-  - travis_retry composer require --dev --no-interaction php-coveralls/php-coveralls
+  - travis_retry composer require --no-interaction php-coveralls/php-coveralls
 
 script:
   - composer test-coverage
