@@ -104,12 +104,12 @@ class Pipeline
             return new LazyLoadingMiddleware($middleware, $this->container);
         }
         throw new InvalidArgumentException(sprintf(
-                'Middleware "%s" is neither a string service name, a PHP callable, or an instance of %s/%s/%s',
-                is_object($middleware) ? get_class($middleware) : gettype($middleware),
-                MiddlewareInterface::class,
-                ResponseInterface::class,
-                RequestHandlerInterface::class
-            ));
+            'Middleware "%s" is neither a string service name, a PHP callable, or an instance of %s/%s/%s',
+            is_object($middleware) ? get_class($middleware) : gettype($middleware),
+            MiddlewareInterface::class,
+            ResponseInterface::class,
+            RequestHandlerInterface::class
+        ));
     }
 
     /**
