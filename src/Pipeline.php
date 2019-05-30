@@ -20,19 +20,16 @@ class Pipeline
     /**
      * @var ContainerInterface|null
      */
-
     private $container;
 
     /**
      * @var array MiddlewareInterface[]
      */
-
     private $middlewares = [];
 
     /**
      * @param ContainerInterface|null $container Used for the LazyLoading decorator.
      */
-
     public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
@@ -46,7 +43,6 @@ class Pipeline
      *
      * @return self
      */
-
     public function pipe($middlewares, bool $addOnTop = false): self
     {
         if (! is_array($middlewares)) {
@@ -77,7 +73,6 @@ class Pipeline
      *
      * @return self
      */
-
     public function pipeOnTop($middlewares): self
     {
         // used to keep the right order when adding an array to the top of the middlewares stack.
@@ -129,7 +124,6 @@ class Pipeline
      *
      * @return self
      */
-
     public function flush(): self
     {
         $this->middlewares = [];
