@@ -12,6 +12,9 @@ services:
     # most of these services are taken from symplify.yml
     # see https://github.com/Symplify/Symplify/blob/master/ecs.yml
 
+    # Limit the line length
+    #Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer: ~
+
     # PHP 5.5
     Symplify\CodingStandard\Fixer\Php\ClassStringToClassConstantFixer: ~
 

@@ -16,7 +16,7 @@
         "phpunit/phpunit": "^7.0",
         "phpstan/phpstan": "^0.11",
         "phpstan/phpstan-strict-rules": "^0.11",
-        "symplify/easy-coding-standard": "^5.4.16"
+        "symplify/easy-coding-standard": "^5.4.14"
     },
     "autoload": {
         "psr-4": {
