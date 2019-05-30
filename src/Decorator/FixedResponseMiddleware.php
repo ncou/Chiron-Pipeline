@@ -14,7 +14,6 @@ class FixedResponseMiddleware implements MiddlewareInterface
     /**
      * @var ResponseInterface
      */
-
     private $fixedResponse;
 
     public function __construct(ResponseInterface $response)
