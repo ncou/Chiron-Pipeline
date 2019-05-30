@@ -271,4 +271,13 @@ class PipelineTest extends TestCase
         $pipeline = new Pipeline();
         $pipeline->pipe(123456);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testExceptionWhenStringEmptyIsUsed()
+    {
+        $pipeline = new Pipeline();
+        $pipeline->pipe('');
+    }
 }

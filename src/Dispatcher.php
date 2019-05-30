@@ -30,7 +30,6 @@ class Dispatcher implements RequestHandlerInterface
     public function __construct(...$middlewares)
     {
         // Allow passing arrays of middleware or individual lists of middleware
-
         if (is_array($middlewares[0]) && count($middlewares) === 1) {
             $middlewares = array_shift($middlewares);
         }
