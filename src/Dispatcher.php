@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Chiron\Pipe;
 
 use OutOfBoundsException;
-use UnexpectedValueException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use UnexpectedValueException;
 
 // TODO : renommer la classe en PipeHandler
 class Dispatcher implements RequestHandlerInterface

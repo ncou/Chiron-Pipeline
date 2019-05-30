@@ -18,7 +18,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Pipeline
 {
     /**
-     * @var null|ContainerInterface
+     * @var ContainerInterface|null
      */
     private $container;
 
@@ -28,9 +28,9 @@ class Pipeline
     private $middlewares = [];
 
     /**
-     * @param null|ContainerInterface $container Used for the LazyLoading decorator.
+     * @param ContainerInterface|null $container Used for the LazyLoading decorator.
      */
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
     }
@@ -91,6 +91,7 @@ class Pipeline
     // TODO : gérer les tableaux de ces type (string|callable...etc)
     private function decorate($middleware): MiddlewareInterface
     {
+        // TODO : vérifier si le type es un Array et dans ce cas on refait un appel à ->pipe()
         if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         } elseif ($middleware instanceof RequestHandlerInterface) {
@@ -101,13 +102,14 @@ class Pipeline
             return new CallableMiddleware($middleware);
         } elseif (is_string($middleware)) { // TODO ajouter aussi un test pour vérifier que la chaine n'est pas vide !!! "&& $middleware !== ''"
             return new LazyLoadingMiddleware($middleware, $this->container);
-        } else {
-            throw new InvalidArgumentException(sprintf(
+        }
+        throw new InvalidArgumentException(sprintf(
                 'Middleware "%s" is neither a string service name, a PHP callable, or an instance of %s/%s/%s',
                 is_object($middleware) ? get_class($middleware) : gettype($middleware),
-                MiddlewareInterface::class, ResponseInterface::class, RequestHandlerInterface::class
+                MiddlewareInterface::class,
+                ResponseInterface::class,
+                RequestHandlerInterface::class
             ));
-        }
     }
 
     /**
