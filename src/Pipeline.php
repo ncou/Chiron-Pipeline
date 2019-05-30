@@ -20,16 +20,19 @@ class Pipeline
     /**
      * @var ContainerInterface|null
      */
+
     private $container;
 
     /**
      * @var array MiddlewareInterface[]
      */
+
     private $middlewares = [];
 
     /**
      * @param ContainerInterface|null $container Used for the LazyLoading decorator.
      */
+
     public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
@@ -43,6 +46,7 @@ class Pipeline
      *
      * @return self
      */
+
     public function pipe($middlewares, bool $addOnTop = false): self
     {
         if (! is_array($middlewares)) {
@@ -54,9 +58,11 @@ class Pipeline
 
             if ($addOnTop) {
                 //prepend Middleware
+
                 array_unshift($this->middlewares, $decorated);
             } else {
                 // append Middleware
+
                 array_push($this->middlewares, $decorated);
             }
         }
@@ -71,9 +77,11 @@ class Pipeline
      *
      * @return self
      */
+
     public function pipeOnTop($middlewares): self
     {
         // used to keep the right order when adding an array to the top of the middlewares stack.
+
         if (is_array($middlewares)) {
             $middlewares = array_reverse($middlewares);
         }
@@ -88,10 +96,13 @@ class Pipeline
      *
      * @return MiddlewareInterface
      */
+
     // TODO : gérer les tableaux de ces type (string|callable...etc)
+
     private function decorate($middleware): MiddlewareInterface
     {
         // TODO : vérifier si le type es un Array et dans ce cas on refait un appel à ->pipe()
+
         if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         } elseif ($middleware instanceof RequestHandlerInterface) {
@@ -103,6 +114,7 @@ class Pipeline
         } elseif (is_string($middleware)) { // TODO ajouter aussi un test pour vérifier que la chaine n'est pas vide !!! "&& $middleware !== ''"
             return new LazyLoadingMiddleware($middleware, $this->container);
         }
+
         throw new InvalidArgumentException(sprintf(
             'Middleware "%s" is neither a string service name, a PHP callable, or an instance of %s/%s/%s',
             is_object($middleware) ? get_class($middleware) : gettype($middleware),
@@ -117,6 +129,7 @@ class Pipeline
      *
      * @return self
      */
+
     public function flush(): self
     {
         $this->middlewares = [];
@@ -131,7 +144,9 @@ class Pipeline
      *
      * @return ResponseInterface
      */
+
     // TODO : passer en facultatif un paramétre supplémentaire : $response, ce qui permettra d'initialiser le dernier middleware qui sera la réponse par défaut si aucun middleware ne retourne de réponse.
+
     public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         $dispatcher = new Dispatcher($this->middlewares);

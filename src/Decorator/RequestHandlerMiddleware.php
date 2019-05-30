@@ -14,6 +14,7 @@ class RequestHandlerMiddleware implements MiddlewareInterface
     /**
      * @var RequestHandlerInterface
      */
+
     private $handler;
 
     public function __construct(RequestHandlerInterface $handler)

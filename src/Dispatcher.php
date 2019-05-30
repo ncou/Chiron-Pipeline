@@ -17,19 +17,23 @@ class Dispatcher implements RequestHandlerInterface
     /**
      * @var array MiddlewareInterface[]
      */
+
     private $middlewares = [];
 
     /**
      * @var int
      */
+
     private $index = 0;
 
     /**
      * @param MiddlewareInterface|MiddlewareInterface[] $middlewares single middleware or an array of middlewares.
      */
+
     public function __construct(...$middlewares)
     {
         // Allow passing arrays of middleware or individual lists of middleware
+
         if (is_array($middlewares[0]) && count($middlewares) === 1) {
             $middlewares = array_shift($middlewares);
         }
@@ -44,6 +48,7 @@ class Dispatcher implements RequestHandlerInterface
      *
      * @return ResponseInterface
      */
+
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if ($this->index >= count($this->middlewares)) {
