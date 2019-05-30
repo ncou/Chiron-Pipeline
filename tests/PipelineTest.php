@@ -131,20 +131,6 @@ class PipelineTest extends TestCase
         $this->assertEquals('foobar', (string) $response->getBody());
     }
 
-    /**
-     * @expectedException \OutOfBoundsException
-     * @expectedExceptionMessage Reached end of middleware stack. Does your controller return a response ?
-     */
-    public function testExceptionWhenNoResponse()
-    {
-        $pipeline = new Pipeline();
-
-        $response = $pipeline->dispatch($this->request);
-
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertEquals('foo', (string) $response->getBody());
-    }
-
     public function testWithOnlyOneBasicDecoratedResponse()
     {
         $response = new Response();
