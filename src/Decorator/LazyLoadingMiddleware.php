@@ -42,7 +42,6 @@ class LazyLoadingMiddleware implements MiddlewareInterface
         }
 
         // retrieve the middleware in the container (it MUST be a MiddlewareInterface instance).
-
         $middleware = $this->getService($this->middlewareName);
 
         if (! $middleware instanceof MiddlewareInterface) {
@@ -63,9 +62,7 @@ class LazyLoadingMiddleware implements MiddlewareInterface
      *
      * @param string $service
      */
-
     // https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L37
-
     private function hasService(string $service): bool
     {
         if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
@@ -83,11 +80,8 @@ class LazyLoadingMiddleware implements MiddlewareInterface
      *
      * @return mixed
      */
-
     // TODO : modifier le doc bloc pour mettre une vraie description.
-
     // https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L56
-
     private function getService(string $service)
     {
         if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
