@@ -7,13 +7,9 @@ namespace Chiron\Tests\Pipe;
 use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
-use Chiron\Pipe\Decorator\CallableMiddleware;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\PipelineBuilder;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 class PipelineBuilderTest extends TestCase
 {
