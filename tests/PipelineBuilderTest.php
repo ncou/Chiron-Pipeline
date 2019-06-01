@@ -9,8 +9,8 @@ use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\PipelineBuilder;
+use Chiron\Pipe\Pipeline;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Server\RequestHandlerInterface;
 
 class PipelineBuilderTest extends TestCase
 {
@@ -117,7 +117,7 @@ class PipelineBuilderTest extends TestCase
         $builder = new PipelineBuilder();
         $handler = $builder->build();
 
-        $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
+        $this->assertInstanceOf(Pipeline::class, $handler);
     }
 
     /**

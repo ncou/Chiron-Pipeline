@@ -11,6 +11,7 @@ use Chiron\Pipe\Decorator\CallableMiddleware;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Pipeline;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Server\RequestHandlerInterface;
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
@@ -21,6 +22,13 @@ class PipelineTest extends TestCase
     protected function setUp()
     {
         $this->request = new ServerRequest('GET', new Uri('/'));
+    }
+
+    public function testPipelineInstanceOfRequestHandler()
+    {
+        $handler = new Pipeline();
+
+        $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
     public function testEmptyMiddlewareQueueAfterFirstInstanciation()

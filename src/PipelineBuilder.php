@@ -136,9 +136,9 @@ class PipelineBuilder
     /**
      * Build a new Pipeline object.
      *
-     * @return RequestHandlerInterface
+     * @return Pipeline
      */
-    public function build(): RequestHandlerInterface
+    public function build(): Pipeline
     {
         $handler = new Pipeline();
 
