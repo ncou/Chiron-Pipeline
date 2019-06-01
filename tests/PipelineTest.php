@@ -11,8 +11,6 @@ use Chiron\Pipe\Decorator\CallableMiddleware;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Pipeline;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Server\MiddlewareInterface;
-
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
@@ -24,7 +22,6 @@ class PipelineTest extends TestCase
     {
         $this->request = new ServerRequest('GET', new Uri('/'));
     }
-
 
     public function testEmptyMiddlewareQueueAfterFirstInstanciation()
     {
@@ -48,20 +45,18 @@ class PipelineTest extends TestCase
     public function testPipeMiddlewares()
     {
         $middleware_1 = new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-                $response->getBody()->write('bar');
+            $response = $handler->handle($request);
+            $response->getBody()->write('bar');
 
-                return $response;
-            });
-
+            return $response;
+        });
 
         $middleware_2 = new CallableMiddleware(function ($request, $handler) {
-                $response = $handler->handle($request);
-                $response->getBody()->write('foo');
+            $response = $handler->handle($request);
+            $response->getBody()->write('foo');
 
-                return $response;
-            });
-
+            return $response;
+        });
 
         $middleware_3 = new FixedResponseMiddleware(new Response(202));
 
@@ -80,5 +75,4 @@ class PipelineTest extends TestCase
         $this->assertEquals(202, $response->getStatusCode());
         $this->assertEquals('foobar', (string) $response->getBody());
     }
-
 }
