@@ -23,30 +23,26 @@ class LazyLoadingMiddleware implements MiddlewareInterface
      */
     private $middlewareName;
 
-    public function __construct(
-        string $middlewareName,
-        ?ContainerInterface $container = null
-    ) {
+    public function __construct(ContainerInterface $container, string $middlewareName)
+    {
         $this->middlewareName = $middlewareName;
-
         $this->container = $container;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (! $this->hasService($this->middlewareName)) {
+        if (! $this->container->has($this->middlewareName)) {
             throw new InvalidArgumentException(sprintf(
-                'Service "%s" is not registered in the container or does not resolve to an autoloadable class name',
+                'Cannot fetch middleware service "%s"; service not registered',
                 $this->middlewareName
             ));
         }
 
-        // retrieve the middleware in the container (it MUST be a MiddlewareInterface instance).
-        $middleware = $this->getService($this->middlewareName);
+        $middleware = $this->container->get($this->middlewareName);
 
         if (! $middleware instanceof MiddlewareInterface) {
             throw new InvalidArgumentException(sprintf(
-                'Service "%s" did not to resolve to a %s instance; resolved to "%s"',
+                'Middleware service "%s" did not to resolve to a %s instance; resolved to "%s"',
                 $this->middlewareName,
                 MiddlewareInterface::class,
                 is_object($middleware) ? get_class($middleware) : gettype($middleware)
@@ -54,40 +50,5 @@ class LazyLoadingMiddleware implements MiddlewareInterface
         }
 
         return $middleware->process($request, $handler);
-    }
-
-    /**
-     * Returns true if the service is in the container, or resolves to an
-     * autoloadable class name.
-     *
-     * @param string $service
-     */
-    // https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L37
-    private function hasService(string $service): bool
-    {
-        if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
-            return true;
-        }
-
-        return class_exists($service);
-    }
-
-    /**
-     * Returns true if the service is in the container, or resolves to an
-     * autoloadable class name.
-     *
-     * @param string $service
-     *
-     * @return mixed
-     */
-    // TODO : modifier le doc bloc pour mettre une vraie description.
-    // https://github.com/zendframework/zend-expressive/blob/master/src/MiddlewareContainer.php#L56
-    private function getService(string $service)
-    {
-        if ($this->container instanceof ContainerInterface && $this->container->has($service)) {
-            return $this->container->get($service);
-        }
-
-        return new $service();
     }
 }

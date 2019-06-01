@@ -112,12 +112,33 @@ class PipelineBuilderTest extends TestCase
         $this->assertSame([], $middlewaresArray);
     }
 
-    public function testBuildPipeline()
+    public function testBuildEmptyPipeline()
     {
         $builder = new PipelineBuilder();
         $handler = $builder->build();
 
         $this->assertInstanceOf(Pipeline::class, $handler);
+
+        $middlewaresArray = $this->readAttribute($handler, 'queue');
+        $this->assertSame([], $middlewaresArray);
+    }
+
+    public function testBuildPipelineWithOneMiddleware()
+    {
+        $builder = new PipelineBuilder();
+
+        $response = new Response();
+        $response->getBody()->write('MIDDLEWARE');
+        $middleware = new FixedResponseMiddleware($response);
+
+        $builder->add($middleware);
+
+        $handler = $builder->build();
+
+        $this->assertInstanceOf(Pipeline::class, $handler);
+
+        $middlewaresArray = $this->readAttribute($handler, 'queue');
+        $this->assertSame([$middleware], $middlewaresArray);
     }
 
     /**

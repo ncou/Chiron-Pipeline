@@ -40,7 +40,7 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->method('get')
             ->with('testMiddleware')
             ->willReturn($middlewareMock);
-        $middleware = new LazyLoadingMiddleware('testMiddleware', $containerMock);
+        $middleware = new LazyLoadingMiddleware($containerMock, 'testMiddleware');
         $response = $middleware->process($requestMock, $handlerMock);
         $this->assertSame($responseMock, $response);
     }
@@ -53,20 +53,13 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->with(FoobarClass::class)
             ->willReturn(false);
 
-        $middleware = new LazyLoadingMiddleware(FoobarClass::class, $containerMock);
-        $this->assertInstanceOf(MiddlewareInterface::class, $middleware);
-    }
-
-    public function testMiddlewareNotFoundInTheContainerButItsAutoloadable_AndContainerIsNull()
-    {
-        $container = null;
-        $middleware = new LazyLoadingMiddleware(FoobarClass::class, $container);
+        $middleware = new LazyLoadingMiddleware($containerMock, FoobarClass::class);
         $this->assertInstanceOf(MiddlewareInterface::class, $middleware);
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Service "foobar" is not registered in the container or does not resolve to an autoloadable class name
+     * @expectedExceptionMessage Cannot fetch middleware service "foobar"; service not registered
      */
     public function testExceptionMiddlewareNotFoundInTheContainerAndNotAutoloadable()
     {
@@ -79,7 +72,7 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->with('foobar')
             ->willReturn(false);
 
-        $middleware = new LazyLoadingMiddleware('foobar', $containerMock);
+        $middleware = new LazyLoadingMiddleware($containerMock, 'foobar');
         $response = $middleware->process($requestMock, $handlerMock);
     }
 
@@ -104,13 +97,13 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->with('foo')
             ->willReturn('bar');
 
-        $middleware = new LazyLoadingMiddleware('foo', $containerMock);
+        $middleware = new LazyLoadingMiddleware($containerMock, 'foo');
         $response = $middleware->process($requestMock, $handlerMock);
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Service "Chiron\Tests\Pipe\Fixtures\FoobarBadClass" did not to resolve to a Psr\Http\Server\MiddlewareInterface instance; resolved to "Chiron\Tests\Pipe\Fixtures\FoobarBadClass"
+     * @expectedExceptionMessage Cannot fetch middleware service "Chiron\Tests\Pipe\Fixtures\FoobarBadClass"; service not registered
      */
     public function testExceptionMiddlewareNotFoundInTheContainerButItsAutoloadableWith_Not_A_ValidType()
     {
@@ -123,7 +116,7 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->with(FoobarBadClass::class)
             ->willReturn(false);
 
-        $middleware = new LazyLoadingMiddleware(FoobarBadClass::class, $containerMock);
+        $middleware = new LazyLoadingMiddleware($containerMock, FoobarBadClass::class);
         $response = $middleware->process($requestMock, $handlerMock);
     }
 }

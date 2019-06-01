@@ -9,6 +9,7 @@ use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Decorator\LazyLoadingMiddleware;
 use Chiron\Pipe\Decorator\RequestHandlerMiddleware;
 use InvalidArgumentException;
+use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -108,8 +109,11 @@ class PipelineBuilder
         }
 
         if (is_string($middleware) && $middleware !== '') {
-            // TODO : lever une exception si l'objet container $this->container est à null !!!!!
-            return new LazyLoadingMiddleware($middleware, $this->container);
+            if (! $this->container instanceof ContainerInterface) {
+                throw new LogicException('You need to provide a ContainerInterface object to resolve string middleware services');
+            }
+
+            return new LazyLoadingMiddleware($this->container, $middleware);
         }
 
         throw new InvalidArgumentException(sprintf(

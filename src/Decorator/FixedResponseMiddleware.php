@@ -14,15 +14,15 @@ class FixedResponseMiddleware implements MiddlewareInterface
     /**
      * @var ResponseInterface
      */
-    private $fixedResponse;
+    private $response;
 
     public function __construct(ResponseInterface $response)
     {
-        $this->fixedResponse = $response;
+        $this->response = $response;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $this->fixedResponse;
+        return $this->response;
     }
 }
