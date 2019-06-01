@@ -93,28 +93,23 @@ class PipelineBuilder
     {
         // TODO : vérifier si le type est un Array et dans ce cas on refait un appel à ->pipe()
         if ($middleware instanceof MiddlewareInterface) {
-
             return $middleware;
         }
 
         if ($middleware instanceof RequestHandlerInterface) {
-
             return new RequestHandlerMiddleware($middleware);
         }
 
         if ($middleware instanceof ResponseInterface) {
-
             return new FixedResponseMiddleware($middleware);
         }
 
         if (is_callable($middleware)) {
-
             return new CallableMiddleware($middleware);
         }
 
         if (is_string($middleware) && $middleware !== '') {
             // TODO : lever une exception si l'objet container $this->container est à null !!!!!
-
             return new LazyLoadingMiddleware($middleware, $this->container);
         }
 
@@ -147,21 +142,5 @@ class PipelineBuilder
     public function build(): RequestHandlerInterface
     {
         return new Pipeline($this->middlewares);
-    }
-
-    /**
-     * Execute the middleware stack.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    // TODO : passer en facultatif un paramétre supplémentaire : $response, ce qui permettra d'initialiser le dernier middleware qui sera la réponse par défaut si aucun middleware ne retourne de réponse.
-    // TODO : méthode à virer.
-    public function dispatch(ServerRequestInterface $request): ResponseInterface
-    {
-        $handler = $this->build();
-
-        return $handler->handle($request);
     }
 }

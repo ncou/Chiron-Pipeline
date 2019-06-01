@@ -34,7 +34,7 @@ class Pipeline implements RequestHandlerInterface
     /**
      * @param MiddlewareInterface $middleware Middleware to add at the end of the queue.
      */
-    public function pipe(MiddlewareInterface $middleware) : self
+    public function pipe(MiddlewareInterface $middleware): self
     {
         $this->queue[] = $middleware;
 
