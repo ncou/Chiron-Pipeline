@@ -24,7 +24,7 @@ class PipelineBuilder
     /**
      * @var array MiddlewareInterface[]
      */
-    private $middlewares = [];
+    private $stack = [];
 
     /**
      * @param ContainerInterface|null $container Used for the LazyLoading decorator.
@@ -69,11 +69,11 @@ class PipelineBuilder
             $decorated = $this->decorate($middleware);
 
             if ($onTop) {
-                //prepend Middleware
-                array_unshift($this->middlewares, $decorated);
+                //prepend decorated Middleware
+                array_unshift($this->stack, $decorated);
             } else {
-                // append Middleware
-                array_push($this->middlewares, $decorated);
+                // append decorated Middleware
+                array_push($this->stack, $decorated);
             }
         }
 
@@ -122,13 +122,13 @@ class PipelineBuilder
     }
 
     /**
-     * Remove all the piped middlewares.
+     * Remove all the stacked middlewares.
      *
      * @return self
      */
     public function flush(): self
     {
-        $this->middlewares = [];
+        $this->stack = [];
 
         return $this;
     }
@@ -140,6 +140,13 @@ class PipelineBuilder
      */
     public function build(): RequestHandlerInterface
     {
-        return new Pipeline($this->middlewares);
+        $handler = new Pipeline();
+
+        // Pipe each decorated middleware (now it's only some MiddlewareInterface intances).
+        foreach ($this->stack as $middleware) {
+            $handler->pipe($middleware);
+        }
+
+        return $handler;
     }
 }

@@ -16,20 +16,7 @@ class Pipeline implements RequestHandlerInterface
     /**
      * @var array MiddlewareInterface[]
      */
-    private $queue;
-
-    /**
-     * @param null|MiddlewareInterface|MiddlewareInterface[] $queue Can be empty or a single middleware or an array of middlewares.
-     */
-    public function __construct(...$queue)
-    {
-        // Allow passing arrays of middleware or individual lists of middleware
-        if (isset($queue[0]) && is_array($queue[0]) && count($queue) === 1) {
-            $queue = array_shift($queue);
-        }
-
-        $this->queue = $queue;
-    }
+    private $queue = [];
 
     /**
      * @param MiddlewareInterface $middleware Middleware to add at the end of the queue.
@@ -53,15 +40,7 @@ class Pipeline implements RequestHandlerInterface
         $middleware = array_shift($this->queue);
 
         if (is_null($middleware)) {
-            throw new OutOfBoundsException('Reached end of middleware stack. Does your controller return a response ?');
-        }
-
-        if (! $middleware instanceof MiddlewareInterface) {
-            throw new UnexpectedValueException(sprintf(
-                'Middleware "%s" is not an instance of %s',
-                is_object($middleware) ? get_class($middleware) : gettype($middleware),
-                MiddlewareInterface::class
-            ));
+            throw new OutOfBoundsException('Reached end of middleware queue. Does your controller return a response ?');
         }
 
         return $middleware->process($request, $this);

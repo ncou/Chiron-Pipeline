@@ -9,6 +9,7 @@ use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\PipelineBuilder;
+use Psr\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 
 class PipelineBuilderTest extends TestCase
@@ -20,11 +21,11 @@ class PipelineBuilderTest extends TestCase
         $this->request = new ServerRequest('GET', new Uri('/'));
     }
 
-    public function testEmptyMiddlewareAfterInstanciation()
+    public function testEmptyMiddlewareStackAfterFirstInstanciation()
     {
         $builder = new PipelineBuilder();
 
-        $middlewaresArray = $this->readAttribute($builder, 'middlewares');
+        $middlewaresArray = $this->readAttribute($builder, 'stack');
         $this->assertSame([], $middlewaresArray);
     }
 
@@ -42,7 +43,7 @@ class PipelineBuilderTest extends TestCase
         $builder->add($middleware_1);
         $builder->addOnTop($middleware_2);
 
-        $middlewaresArray = $this->readAttribute($builder, 'middlewares');
+        $middlewaresArray = $this->readAttribute($builder, 'stack');
 
         $this->assertSame($middleware_2, $middlewaresArray[0]);
     }
@@ -69,7 +70,7 @@ class PipelineBuilderTest extends TestCase
         $builder->add($middleware_1);
         $builder->addOnTop([$middleware_2, $middleware_3, $middleware_4]);
 
-        $middlewaresArray = $this->readAttribute($builder, 'middlewares');
+        $middlewaresArray = $this->readAttribute($builder, 'stack');
 
         $this->assertSame($middleware_2, $middlewaresArray[0]);
         $this->assertSame($middleware_3, $middlewaresArray[1]);
@@ -91,7 +92,7 @@ class PipelineBuilderTest extends TestCase
         $builder->add($middleware_1);
         $builder->add($middleware_2);
 
-        $middlewaresArray = $this->readAttribute($builder, 'middlewares');
+        $middlewaresArray = $this->readAttribute($builder, 'stack');
 
         $this->assertSame($middleware_2, $middlewaresArray[1]);
     }
@@ -106,9 +107,17 @@ class PipelineBuilderTest extends TestCase
         $builder->add($middleware);
         $builder->flush();
 
-        $middlewaresArray = $this->readAttribute($builder, 'middlewares');
+        $middlewaresArray = $this->readAttribute($builder, 'stack');
 
         $this->assertSame([], $middlewaresArray);
+    }
+
+    public function testBuildPipeline()
+    {
+        $builder = new PipelineBuilder();
+        $handler = $builder->build();
+
+        $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
     /**
