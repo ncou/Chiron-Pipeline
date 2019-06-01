@@ -9,8 +9,8 @@ use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\PipelineBuilder;
-use Psr\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class PipelineBuilderTest extends TestCase
 {
