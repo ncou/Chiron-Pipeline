@@ -8,8 +8,8 @@ use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
 use Chiron\Http\Psr\Uri;
 use Chiron\Pipe\Decorator\FixedResponseMiddleware;
-use Chiron\Pipe\PipelineBuilder;
 use Chiron\Pipe\Pipeline;
+use Chiron\Pipe\PipelineBuilder;
 use PHPUnit\Framework\TestCase;
 
 class PipelineBuilderTest extends TestCase
