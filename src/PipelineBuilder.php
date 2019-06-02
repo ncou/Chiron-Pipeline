@@ -89,9 +89,9 @@ class PipelineBuilder
      * @return MiddlewareInterface
      */
     // TODO : gérer les tableaux de ces type (string|callable...etc)
+    // TODO : vérifier si le type est un Array et dans ce cas on refait un appel à ->pipe()
     private function decorate($middleware): MiddlewareInterface
     {
-        // TODO : vérifier si le type est un Array et dans ce cas on refait un appel à ->pipe()
         if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         }
