@@ -12,6 +12,7 @@ use Chiron\Pipe\Decorator\FixedResponseMiddleware;
 use Chiron\Pipe\Pipeline;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Server\RequestHandlerInterface;
+use Chiron\Tests\Pipe\Fixtures\EmptyMiddleware;
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
@@ -50,6 +51,19 @@ class PipelineTest extends TestCase
         $handler->handle($this->request);
     }
 
+    /**
+     * @expectedException \OutOfBoundsException
+     * @expectedExceptionMessage Reached end of middleware queue. Does your controller return a response ?
+     */
+    public function testPipelineThrowExceptionIfMiddlewareDoesntReturnAResponse()
+    {
+        $handler = new Pipeline();
+
+        $handler->pipe(new EmptyMiddleware());
+
+        $handler->handle($this->request);
+    }
+
     public function testPipeMiddlewares()
     {
         $middleware_1 = new CallableMiddleware(function ($request, $handler) {
@@ -83,4 +97,6 @@ class PipelineTest extends TestCase
         $this->assertEquals(202, $response->getStatusCode());
         $this->assertEquals('foobar', (string) $response->getBody());
     }
+
+
 }
