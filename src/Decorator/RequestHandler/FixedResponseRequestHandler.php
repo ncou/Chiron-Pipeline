@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Chiron\Pipe\Decorator;
+namespace Chiron\Pipe\Decorator\RequestHandler;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class FixedResponseMiddleware implements MiddlewareInterface
+class FixedResponseRequestHandler implements RequestHandlerInterface
 {
     /**
      * @var ResponseInterface
@@ -21,7 +20,7 @@ class FixedResponseMiddleware implements MiddlewareInterface
         $this->response = $response;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return $this->response;
     }

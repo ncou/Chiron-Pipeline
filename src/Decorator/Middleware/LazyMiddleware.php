@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chiron\Pipe\Decorator;
+namespace Chiron\Pipe\Decorator\Middleware;
 
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class LazyLoadingMiddleware implements MiddlewareInterface
+class LazyMiddleware implements MiddlewareInterface
 {
     /**
      * @var ContainerInterface
