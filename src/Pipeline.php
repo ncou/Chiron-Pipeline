@@ -4,46 +4,84 @@ declare(strict_types=1);
 
 namespace Chiron\Pipe;
 
-use OutOfBoundsException;
+/**
+ * Import classes
+ */
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-//https://github.com/northwoods/broker/blob/master/src/Broker.php
-
-class Pipeline implements RequestHandlerInterface
+/**
+ * RequestHandler
+ *
+ * @link https://www.php-fig.org/psr/psr-15/
+ * @link https://www.php-fig.org/psr/psr-15/meta/
+ */
+final class Pipeline implements RequestHandlerInterface
 {
-    /**
-     * @var array MiddlewareInterface[]
-     */
-    private $queue = [];
+
+    /** @var array MiddlewareInterface[] */
+    private $middleware = [];
+
+    /** @var RequestHandlerInterface */
+    private $fallback;
+
+    /** @var int */
+    private $index = 0;
 
     /**
-     * @param MiddlewareInterface $middleware Middleware to add at the end of the queue.
+     * Constructor of the class
      */
+    public function __construct()
+    {
+        $this->fallback = new EmptyPipelineHandler();
+    }
+
+    /**
+     * @param MiddlewareInterface $middleware Middleware to add at the end of the array.
+     */
+    // TODO : renommer la fonction en "addMiddleware()"
     public function pipe(MiddlewareInterface $middleware): self
     {
-        $this->queue[] = $middleware;
+        $this->middleware[] = $middleware;
 
         return $this;
     }
 
     /**
-     * Execute the middleware stack.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
+     * @param RequestHandlerInterface $fallback RequestHandler used if the last middleware doesn't return a response.
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function setFallback(RequestHandlerInterface $fallback): self
     {
-        $middleware = array_shift($this->queue);
+        $this->fallback = $fallback;
 
-        if (is_null($middleware)) {
-            throw new OutOfBoundsException('Reached end of middleware queue. Does your controller return a response ?');
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        if (isset($this->middleware[$this->index])) {
+            //return $this->middleware[$index]->process($request, $this);
+            return $this->middleware[$this->index]->process($request, $this->nextHandler());
         }
 
-        return $middleware->process($request, $this);
+        return $this->fallback->handle($request);
+    }
+
+    /**
+     * Get a handler pointing to the next middleware.
+     *
+     * @return static
+     */
+    private function nextHandler()
+    {
+        $copy = clone $this;
+        $copy->index++;
+
+        return $copy;
     }
 }
