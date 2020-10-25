@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Chiron\Pipe;
 
-/**
- * Import classes
- */
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -33,15 +30,19 @@ final class Pipeline implements RequestHandlerInterface
     /**
      * Constructor of the class
      */
-    public function __construct()
+    public function __construct(iterable $middlewares = [], ?RequestHandlerInterface $fallback = null)
     {
-        $this->fallback = new EmptyPipelineHandler();
+        // Use the pipe() method to enforce the typehint as MiddlewareInterface.
+        foreach ($middlewares as $middleware) {
+            $this->pipe($middleware);
+        }
+
+        $this->fallback = $fallback ?? new EmptyPipelineHandler();
     }
 
     /**
      * @param MiddlewareInterface $middleware Middleware to add at the end of the array.
      */
-    // TODO : renommer la fonction en "addMiddleware()"
     public function pipe(MiddlewareInterface $middleware): self
     {
         $this->middleware[] = $middleware;
@@ -65,7 +66,6 @@ final class Pipeline implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (isset($this->middleware[$this->index])) {
-            //return $this->middleware[$index]->process($request, $this);
             return $this->middleware[$this->index]->process($request, $this->nextHandler());
         }
 
