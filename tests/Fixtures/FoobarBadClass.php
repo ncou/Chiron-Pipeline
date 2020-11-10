@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chiron\Tests\Pipe\Fixtures;
+namespace Chiron\Pipeline\Tests\Fixtures;
 
 class FoobarBadClass
 {

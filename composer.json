@@ -19,11 +19,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Chiron\\Pipe\\": "src/"
+            "Chiron\\Pipeline\\": "src/"
         }
     },
     "autoload-dev" : {
-        "psr-4": { "Chiron\\Tests\\Pipe\\" : "tests/" }
+        "psr-4": { "Chiron\\Pipeline\\Tests\\" : "tests/" }
     },
     "scripts": {
         "test": [

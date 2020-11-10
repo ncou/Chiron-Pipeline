@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chiron\Tests\Pipe\Fixtures;
+namespace Chiron\Pipeline\Tests\Fixtures;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;

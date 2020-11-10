@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chiron\Tests\Pipe;
+namespace Chiron\Pipeline\Tests;
 
 use Chiron\Http\Psr\Response;
 use Chiron\Http\Psr\ServerRequest;
