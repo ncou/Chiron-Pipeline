@@ -11,11 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Chiron\Container\Container;
 use Chiron\Container\ContainerAwareInterface;
 
-use Chiron\Pipe\Decorator\Middleware\CallableMiddleware;
-use Chiron\Pipe\Decorator\Middleware\FixedResponseMiddleware;
-use Chiron\Pipe\Decorator\Middleware\LazyMiddleware;
-use Chiron\Pipe\Decorator\Middleware\RequestHandlerMiddleware;
-
 /**
  * Handle an incoming request.
  *

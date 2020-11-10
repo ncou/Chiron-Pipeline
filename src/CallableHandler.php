@@ -66,7 +66,6 @@ class CallableHandler implements RequestHandlerInterface, ContainerAwareInterfac
             throw new RouteException('Unable to configure route pipeline without associated container');
         }*/
 
-
         try {
             //https://github.com/PHP-DI/Slim-Bridge/blob/master/src/ControllerInvoker.php#L43
             $response = $this->getContainer()->call($callable, $parameters);

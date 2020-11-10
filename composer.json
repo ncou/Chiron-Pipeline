@@ -6,16 +6,17 @@
     "homepage": "https://github.com/ncou/Chiron-Pipeline",
     "license": "MIT",
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
+        "chiron/container": "^3.6",
         "psr/http-server-handler": "^1.0",
-        "psr/http-server-middleware": "^1.0",
-        "psr/container": "^1.0"
+        "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0",
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-strict-rules": "^0.11",
-        "symplify/easy-coding-standard": "^5.4.14"
+        "phpunit/phpunit": "^8.0",
+        "phpstan/phpstan": "^0.12.0",
+        "phpstan/phpstan-strict-rules": "^0.12",
+        "overtrue/phplint": "^2.0",
+        "chiron/coding-standard": "^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -26,15 +27,12 @@
         "psr-4": { "Chiron\\Pipeline\\Tests\\" : "tests/" }
     },
     "scripts": {
-        "test": [
-            "@phpunit",
-            "@phpstan"
-        ],
         "phpunit": "phpunit --colors=always",
-        "phpstan": "phpstan analyze -l max -c phpstan.neon ./src",
         "test-coverage": "phpunit --coverage-clover clover.xml",
-        "cscheck": "ecs check src",
-        "csfix": "ecs check src --fix"
+        "phpstan": "phpstan analyse src --level=max",
+        "phplint": "phplint --ansi",
+        "check-style": "phpcs src tests",
+        "fix-style": "phpcbf src tests"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

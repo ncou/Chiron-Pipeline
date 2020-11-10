@@ -12,7 +12,7 @@ use OutOfBoundsException;
 
 final class EmptyPipelineHandler implements RequestHandlerInterface
 {
-    public function handle(ServerRequestInterface $request) : ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         throw new OutOfBoundsException('Reached end of middleware queue. Does your controller return a response ?');
     }

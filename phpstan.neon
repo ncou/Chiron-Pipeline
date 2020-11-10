@@ -1,9 +1,0 @@
-includes:
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
-parameters:
-    fileExtensions:
-        - php
-    reportUnmatchedIgnoredErrors: true
-    ignoreErrors:
-        # @see src/Dispatcher
-        - '#PHPDoc tag @param for parameter \$middleware with type array\|string\|Zend\\Stratigility\\MiddlewarePipe is not subtype of native type array\<int, mixed\>#'
