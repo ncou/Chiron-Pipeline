@@ -9,6 +9,7 @@ use Chiron\Pipeline\CallableHandler;
 use Psr\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 
+// TODO : mettre cette classe dans un répertoire "Traits" ????
 trait PipelineTrait
 {
     /** @ver Pipeline */
@@ -20,7 +21,6 @@ trait PipelineTrait
 
     protected function resolveMiddleware($middleware): MiddlewareInterface
     {
-        // TODO : remplace ce "if" par un test via le point d'interrogation => exemple         $middleware = is_string($middleware) ? $this->container->get($middleware) : $middleware;
         if (is_string($middleware)) {
             // TODO : faire un catch de l'exception ContainerNotFoundException pour retourner une InvalidArgument ou PipelineException avec le message 'the string parameter is not a valid service name' ????
             $middleware = $this->container->get($middleware); // TODO : faire plutot un ->make()

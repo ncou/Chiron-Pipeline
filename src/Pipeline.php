@@ -12,11 +12,6 @@ use Chiron\Container\Container;
 use Chiron\Container\ContainerAwareInterface;
 
 /**
- * Handle an incoming request.
- *
- * @see https://www.php-fig.org/psr/psr-15/
- * @see https://www.php-fig.org/psr/psr-15/meta/
- *
  * Attempts to handle an incoming request by doing the following:
  *
  * - Cloning itself, to produce a request handler.
@@ -26,10 +21,12 @@ use Chiron\Container\ContainerAwareInterface;
  * If the pipeline is empty at the time this method is invoked, it will
  * raise an exception.
  *
- * @throws Exception\EmptyPipelineException if no middleware is present in
+ * @see https://www.php-fig.org/psr/psr-15/
+ * @see https://www.php-fig.org/psr/psr-15/meta/
+ *
+ * @throws OutOfBoundsException if no middleware is present in
  *     the instance in order to process the request.
  */
-// TODO : corriger la phpDoc.
 final class Pipeline implements RequestHandlerInterface
 {
     /** @var array MiddlewareInterface[] */

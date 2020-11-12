@@ -77,7 +77,7 @@ class CallableHandler implements RequestHandlerInterface, ContainerAwareInterfac
 
         // TODO : il faudrait réussir via la reflexion à récupérer la ligne php ou se trouve le callable et utiliser ce file/line dans l'exception, ca serait plus simple à débugger !!! ou à minima si c'est un tableau on affiche le détail du tableau (qui sera au format, [class, 'method'])
         if (! $response instanceof ResponseInterface) {
-            // TODO : retourner plutot une HandlerException ????
+            // TODO : retourner plutot une HandlerException ????  https://github.com/zendframework/zend-stratigility/blob/master/src/Exception/MissingResponseException.php
             throw new LogicException(sprintf(
                 'Decorated callable request handler of type "%s" failed to produce a response.',
                 is_object($callable) ? get_class($callable) : gettype($callable)
