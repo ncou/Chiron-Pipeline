@@ -18,15 +18,12 @@ use Chiron\Container\ContainerAwareInterface;
  * - Dequeuing the first middleware in the cloned handler.
  * - Processing the first middleware using the request and the cloned handler.
  *
- * If the pipeline is empty at the time this method is invoked, it will
- * raise an exception.
+ * If the pipeline is empty at the time this method is invoked, it will raise an exception.
  *
  * @see https://www.php-fig.org/psr/psr-15/
  * @see https://www.php-fig.org/psr/psr-15/meta/
- *
- * @throws OutOfBoundsException if no middleware is present in
- *     the instance in order to process the request.
  */
+// TODO : corriger la phpDoc !!!!
 final class Pipeline implements RequestHandlerInterface
 {
     /** @var array MiddlewareInterface[] */
@@ -38,12 +35,20 @@ final class Pipeline implements RequestHandlerInterface
     /** @ver Container */
     private $container;
 
+    /**
+     * @param Container $container
+     */
     public function __construct(Container $container)
     {
         $this->container = $container;
         $this->fallback = new EmptyPipelineHandler();
     }
 
+    /**
+     * @param MiddlewareInterface $middleware
+     *
+     * @return self
+     */
     public function pipe(MiddlewareInterface $middleware): self
     {
         if ($middleware instanceof ContainerAwareInterface && ! $middleware->hasContainer()) {
@@ -55,6 +60,11 @@ final class Pipeline implements RequestHandlerInterface
         return $this;
     }
 
+    /**
+     * @param RequestHandlerInterface $handler
+     *
+     * @return self
+     */
     public function fallback(RequestHandlerInterface $handler): self
     {
         if ($handler instanceof ContainerAwareInterface && ! $handler->hasContainer()) {
@@ -70,7 +80,11 @@ final class Pipeline implements RequestHandlerInterface
      * Bind a fresh ServerRequestInterface instance in the container.
      * Iterate and execute the middleare queue, then execute the fallback hander.
      *
-     * {@inheritDoc}
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
+     *
+     * @throws PipelineException if no middleware or handler is present in order to return a response.
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -100,9 +114,9 @@ final class Pipeline implements RequestHandlerInterface
     /**
      * Get a handler pointing to the next middleware position.
      *
-     * @return static
+     * @return RequestHandlerInterface New Pipeline instance used as handler.
      */
-    private function nextHandler()
+    private function nextHandler(): RequestHandlerInterface
     {
         $copy = clone $this;
         $copy->position++;
