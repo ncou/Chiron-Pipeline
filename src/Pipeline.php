@@ -14,16 +14,17 @@ use Chiron\Container\ContainerAwareInterface;
 /**
  * Attempts to handle an incoming request by doing the following:
  *
- * - Cloning itself, to produce a request handler.
- * - Dequeuing the first middleware in the cloned handler.
- * - Processing the first middleware using the request and the cloned handler.
+ * - Inject the container in the middleware or fallback handler if not already presents.
+ * - Bind in the container the request instance to the ServerRequestInterface::class key.
+ * - Cloning itself, to produce a request handler and increase the array index position.
+ * - Processing the middleware in the queue (using the array index position) with the cloned handler.
+ * - Using the fallback handler to return a default response (step skipped if the middleware queue return a response).
  *
- * If the pipeline is empty at the time this method is invoked, it will raise an exception.
+ * The pipeline use a default fallback handler to throw a PipelineException for missing response reason.
  *
  * @see https://www.php-fig.org/psr/psr-15/
  * @see https://www.php-fig.org/psr/psr-15/meta/
  */
-// TODO : corriger la phpDoc !!!!
 final class Pipeline implements RequestHandlerInterface
 {
     /** @var array MiddlewareInterface[] */
