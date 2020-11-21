@@ -4,39 +4,38 @@ declare(strict_types=1);
 
 namespace Chiron\Pipeline\Tests;
 
-use Chiron\Http\Psr\Response;
-use Chiron\Http\Psr\ServerRequest;
-use Chiron\Http\Psr\Uri;
-use Chiron\Pipe\Decorator\CallableMiddleware;
-use Chiron\Pipe\Decorator\FixedResponseMiddleware;
-use Chiron\Pipe\Pipeline;
+use Chiron\Pipeline\Decorator\CallableMiddleware;
+use Chiron\Pipeline\Decorator\FixedResponseMiddleware;
+use Chiron\Pipeline\Pipeline;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Server\RequestHandlerInterface;
-use Chiron\Tests\Pipe\Fixtures\EmptyMiddleware;
+use Chiron\Tests\Pipeline\Fixtures\EmptyMiddleware;
+use Nyholm\Psr7\ServerRequest;
+use Chiron\Container\Container;
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
 class PipelineTest extends TestCase
 {
-    public $request;
+    private $request;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->request = new ServerRequest('GET', new Uri('/'));
+        $this->request = new ServerRequest('GET', '/');
     }
 
     public function testPipelineInstanceOfRequestHandler()
     {
-        $handler = new Pipeline();
+        $handler = new Pipeline(new Container());
 
         $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
     public function testEmptyMiddlewareQueueAfterFirstInstanciation()
     {
-        $handler = new Pipeline();
+        $handler = new Pipeline(new Container());
 
-        $middlewaresArray = $this->readAttribute($handler, 'queue');
+        $middlewaresArray = $this->readAttribute($handler, 'middlewares');
         $this->assertSame([], $middlewaresArray);
     }
 
@@ -46,7 +45,7 @@ class PipelineTest extends TestCase
      */
     public function testPipelineThrowExceptionIfQueueIsEmpty()
     {
-        $handler = new Pipeline();
+        $handler = new Pipeline(new Container());
 
         $handler->handle($this->request);
     }
@@ -57,7 +56,7 @@ class PipelineTest extends TestCase
      */
     public function testPipelineThrowExceptionIfMiddlewareDoesntReturnAResponse()
     {
-        $handler = new Pipeline();
+        $handler = new Pipeline(new Container());
 
         $handler->pipe(new EmptyMiddleware());
 
@@ -82,13 +81,13 @@ class PipelineTest extends TestCase
 
         $middleware_3 = new FixedResponseMiddleware(new Response(202));
 
-        $handler = new Pipeline();
+        $handler = new Pipeline(new Container());
 
         $handler->pipe($middleware_1);
         $handler->pipe($middleware_2);
         $handler->pipe($middleware_3);
 
-        $middlewaresArray = $this->readAttribute($handler, 'queue');
+        $middlewaresArray = $this->readAttribute($handler, 'middlewares');
 
         $this->assertSame([$middleware_1, $middleware_2, $middleware_3], $middlewaresArray);
 
@@ -97,6 +96,4 @@ class PipelineTest extends TestCase
         $this->assertEquals(202, $response->getStatusCode());
         $this->assertEquals('foobar', (string) $response->getBody());
     }
-
-
 }

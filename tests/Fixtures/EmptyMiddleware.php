@@ -16,7 +16,7 @@ class EmptyMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // do nothing simple use the previous handle to get the response.
-        // this class is used to test an pipeline with no returned response (because prévious $handler is the empty pipeline class).
+        // this class is used to test an pipeline with no returned response (because previous $handler is the empty pipeline class).
         return $handler->handle($request);
     }
 }
