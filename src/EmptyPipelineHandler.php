@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Chiron\Pipeline;
 
+use Chiron\Pipeline\Exception\PipelineException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Chiron\Pipeline\Exception\PipelineException;
 
 final class EmptyPipelineHandler implements RequestHandlerInterface
 {

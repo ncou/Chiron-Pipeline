@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Chiron\Pipeline;
 
+use Chiron\Container\Container;
+use Chiron\Container\ContainerAwareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Chiron\Container\Container;
-use Chiron\Container\ContainerAwareInterface;
 
 /**
  * Attempts to handle an incoming request by doing the following:
@@ -27,13 +27,13 @@ use Chiron\Container\ContainerAwareInterface;
  */
 final class Pipeline implements RequestHandlerInterface
 {
-    /** @var array MiddlewareInterface[] */
+    /** @var array<MiddlewareInterface> */
     private $middlewares = [];
     /** @var RequestHandlerInterface */
     private $fallback;
     /** @var int */
     private $position = 0;
-    /** @ver Container */
+    /** @var Container */
     private $container;
 
     /**
@@ -84,8 +84,6 @@ final class Pipeline implements RequestHandlerInterface
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
-     *
-     * @throws PipelineException if no middleware or handler is present in order to return a response.
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

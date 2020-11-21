@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Chiron\Pipeline\Tests;
 
+use Chiron\Container\Container;
+use Chiron\Container\ContainerAwareInterface;
+use Chiron\Pipeline\Exception\PipelineException;
+use Chiron\Pipeline\Pipeline;
 use Chiron\Pipeline\Tests\Fixtures\CallableMiddleware;
 use Chiron\Pipeline\Tests\Fixtures\CallableRequestHandler;
-use Chiron\Pipeline\Pipeline;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Server\RequestHandlerInterface;
 use Chiron\Pipeline\Tests\Fixtures\EmptyMiddleware;
-use Nyholm\Psr7\ServerRequest;
 use Nyholm\Psr7\Response;
-use Chiron\Container\Container;
-use Chiron\Pipeline\Exception\PipelineException;
-use Chiron\Container\ContainerAwareInterface;
+use Nyholm\Psr7\ServerRequest;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use ReflectionProperty;
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
@@ -189,7 +190,7 @@ class PipelineTest extends TestCase
 
     private function reflectContainer(ContainerAwareInterface $containerAwareInstance): Container
     {
-        $r = new \ReflectionProperty($containerAwareInstance, 'container');
+        $r = new ReflectionProperty($containerAwareInstance, 'container');
         $r->setAccessible(true);
 
         return $r->getValue($containerAwareInstance);
@@ -236,5 +237,4 @@ class PipelineTest extends TestCase
         $this->assertTrue($container->get(ServerRequestInterface::class)->getAttribute('foo'));
         $this->assertTrue($container->get(ServerRequestInterface::class)->getAttribute('bar'));
     }
-
 }
