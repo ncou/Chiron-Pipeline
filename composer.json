@@ -14,8 +14,6 @@
     "require-dev": {
         "phpunit/phpunit": "^8.0",
         "phpstan/phpstan": "^0.12.0",
-        "phpstan/phpstan-strict-rules": "^0.12",
-        "overtrue/phplint": "^2.0",
         "chiron/coding-standard": "^3.0",
         "nyholm/psr7": "^1.3"
     },
@@ -31,7 +29,6 @@
         "phpunit": "phpunit --colors=always",
         "test-coverage": "phpunit --coverage-clover clover.xml",
         "phpstan": "phpstan analyse src --level=max",
-        "phplint": "phplint --ansi",
         "check-style": "phpcs src tests",
         "fix-style": "phpcbf src tests"
     },
