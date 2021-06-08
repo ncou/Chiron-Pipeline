@@ -10,6 +10,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Chiron\Pipeline\Event\BeforeMiddleware;
+use Chiron\Pipeline\Event\AfterMiddleware;
+
+// TODO : exemple avec les événements !!!!
+//https://github.com/yiisoft/middleware-dispatcher/blob/master/src/MiddlewareStack.php#L98
+
+// TODO : vérifier qu'on a pas de doublons de middlewares : https://github.com/illuminate/routing/blob/f0908784ce618438be1a8b99f4613f62d18d8013/Router.php#L1256
 
 /**
  * Attempts to handle an incoming request by doing the following:
@@ -25,23 +33,25 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @see https://www.php-fig.org/psr/psr-15/
  * @see https://www.php-fig.org/psr/psr-15/meta/
  */
+// TODO : actualiser la phpDoc et ajouter un @see sur les specs psr14 pour les events !!!!
 final class Pipeline implements RequestHandlerInterface
 {
-    /** @var array<MiddlewareInterface> */
-    private $middlewares = [];
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
     /** @var RequestHandlerInterface */
     private $fallback;
     /** @var int */
-    private $position = 0;
-    /** @var Container */
-    private $container;
+    private $position = 0; // TODO : renommer la variable en $index !!!!
+    /** @var array<MiddlewareInterface> */
+    private $middlewares = []; // TODO : renommer la variable en $queue ???
 
-    /**
-     * @param Container $container
-     */
-    public function __construct(Container $container)
+    /** @var callable */
+    //public $beforeMiddleware = null; // TODO : code temporaire à virer !!!
+
+
+    public function __construct(EventDispatcherInterface $dispatcher)
     {
-        $this->container = $container;
+        $this->dispatcher = $dispatcher;
         $this->fallback = new EmptyPipelineHandler();
     }
 
@@ -52,10 +62,6 @@ final class Pipeline implements RequestHandlerInterface
      */
     public function pipe(MiddlewareInterface $middleware): self
     {
-        if ($middleware instanceof ContainerAwareInterface && ! $middleware->hasContainer()) {
-            $middleware->setContainer($this->container);
-        }
-
         $this->middlewares[] = $middleware;
 
         return $this;
@@ -68,10 +74,6 @@ final class Pipeline implements RequestHandlerInterface
      */
     public function fallback(RequestHandlerInterface $handler): self
     {
-        if ($handler instanceof ContainerAwareInterface && ! $handler->hasContainer()) {
-            $handler->setContainer($this->container);
-        }
-
         $this->fallback = $handler;
 
         return $this;
@@ -87,11 +89,27 @@ final class Pipeline implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        // TODO : remplacer cette appel au binding par un événement "BeforeMiddleware" : exemple : https://github.com/yiisoft/middleware-dispatcher/blob/master/src/MiddlewareStack.php#L85
         // Attach a fresh instance of the request in the container.
-        $this->bindRequestInstance($request);
+        //$this->bindRequestInstance($request); // TODO : transformer ce bout de code en une propriété public de classe "$onHandle" de type callable qu'on executerait avant chaque Handle. Cela permettrait au package pipeline de ne plus avoir de dépendance avec le package container.
 
-        if (isset($this->middlewares[$this->position])) {
-            return $this->middlewares[$this->position]->process($request, $this->nextHandler());
+        // TODO : code temporaire le temps d'ajouter un event dispatcher !!!!
+        /*
+        if ($this->beforeMiddleware !== null) {
+            call_user_func_array($this->beforeMiddleware, [$request]);
+        }*/
+
+        $middleware = $this->middlewares[$this->position] ?? null;
+
+        //if (isset($this->middlewares[$this->position])) {
+        if ($middleware !== null) {
+            $this->dispatcher->dispatch(new BeforeMiddleware($middleware, $request));
+
+            try {
+                return $response = $middleware->process($request, $this->nextHandler());
+            } finally {
+                $this->dispatcher->dispatch(new AfterMiddleware($middleware, $response ?? null));
+            }
         }
 
         return $this->fallback->handle($request);
@@ -105,10 +123,11 @@ final class Pipeline implements RequestHandlerInterface
      *
      * @param ServerRequestInterface $request
      */
+    /*
     private function bindRequestInstance(ServerRequestInterface $request): void
     {
         $this->container->bind(ServerRequestInterface::class, $request);
-    }
+    }*/
 
     /**
      * Get a handler pointing to the next middleware position.

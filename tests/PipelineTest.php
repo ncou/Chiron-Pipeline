@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
+use Chiron\Event\EventDispatcher;
+use Chiron\Event\ListenerProvider;
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
@@ -31,31 +33,31 @@ class PipelineTest extends TestCase
 
     public function testPipelineInstanceOfRequestHandler()
     {
-        $handler = new Pipeline(new Container());
+        $pipeline = $this->makePipeline();
 
-        $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
+        $this->assertInstanceOf(RequestHandlerInterface::class, $pipeline);
     }
 
     public function testPipelineThrowExceptionIfQueueIsEmpty()
     {
-        $handler = new Pipeline(new Container());
+        $pipeline = $this->makePipeline();
 
         $this->expectException(PipelineException::class);
-        $this->expectExceptionMessage('Pipeline reached end of middleware queue and failed to return a response');
+        $this->expectExceptionMessage('Pipeline reached end of middleware queue and failed to return a response.');
 
-        $handler->handle($this->request);
+        $pipeline->handle($this->request);
     }
 
     public function testPipelineThrowExceptionIfMiddlewareDoesntReturnAResponse()
     {
-        $handler = new Pipeline(new Container());
+        $pipeline = $this->makePipeline();
 
-        $handler->pipe(new EmptyMiddleware());
+        $pipeline->pipe(new EmptyMiddleware());
 
         $this->expectException(PipelineException::class);
-        $this->expectExceptionMessage('Pipeline reached end of middleware queue and failed to return a response');
+        $this->expectExceptionMessage('Pipeline reached end of middleware queue and failed to return a response.');
 
-        $handler->handle($this->request);
+        $pipeline->handle($this->request);
     }
 
     public function testPipeMiddlewaresWithLastMiddlewareReturnResponse()
@@ -78,13 +80,13 @@ class PipelineTest extends TestCase
             return new Response(202);
         });
 
-        $handler = new Pipeline(new Container());
+        $pipeline = $this->makePipeline();
 
-        $handler->pipe($middleware_1);
-        $handler->pipe($middleware_2);
-        $handler->pipe($middleware_3);
+        $pipeline->pipe($middleware_1);
+        $pipeline->pipe($middleware_2);
+        $pipeline->pipe($middleware_3);
 
-        $response = $handler->handle($this->request);
+        $response = $pipeline->handle($this->request);
 
         $this->assertEquals(202, $response->getStatusCode());
         $this->assertEquals('foobar', (string) $response->getBody());
@@ -110,14 +112,14 @@ class PipelineTest extends TestCase
             return new Response(202);
         });
 
-        $handler = new Pipeline(new Container());
+        $pipeline = $this->makePipeline();
 
-        $handler->pipe($middleware_1);
-        $handler->pipe($middleware_2);
+        $pipeline->pipe($middleware_1);
+        $pipeline->pipe($middleware_2);
 
-        $handler->fallback($fallback);
+        $pipeline->fallback($fallback);
 
-        $response = $handler->handle($this->request);
+        $response = $pipeline->handle($this->request);
 
         $this->assertEquals(202, $response->getStatusCode());
         $this->assertEquals('foobar', (string) $response->getBody());
@@ -129,112 +131,20 @@ class PipelineTest extends TestCase
             return new Response(404);
         });
 
-        $handler = new Pipeline(new Container());
+        $pipeline = $this->makePipeline();
 
-        $handler->fallback($fallback);
+        $pipeline->fallback($fallback);
 
-        $response = $handler->handle($this->request);
+        $response = $pipeline->handle($this->request);
 
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    public function testContainerIsInjectedIfNotAlreadyPresents()
+    private function makePipeline(): Pipeline
     {
-        $middleware = new CallableMiddleware(function ($request, $handler) {
-            return $handler->handle($request);
-        });
+        $listenerProvider = new ListenerProvider();
+        $eventDispatcher = new EventDispatcher($listenerProvider);
 
-        $fallback = new CallableRequestHandler(function ($request) {
-            return new Response();
-        });
-
-        $container = new Container();
-        $handler = new Pipeline($container);
-
-        $this->assertFalse($middleware->hasContainer());
-        $this->assertFalse($fallback->hasContainer());
-
-        $handler->pipe($middleware);
-        $handler->fallback($fallback);
-
-        $this->assertTrue($middleware->hasContainer());
-        $this->assertTrue($fallback->hasContainer());
-
-        $this->assertSame($container, $this->reflectContainer($middleware));
-        $this->assertSame($container, $this->reflectContainer($fallback));
-    }
-
-    public function testContainerIsNotInjectedIfAlreadyPresents()
-    {
-        $middleware = new CallableMiddleware(function ($request, $handler) {
-            return $handler->handle($request);
-        });
-
-        $fallback = new CallableRequestHandler(function ($request) {
-            return new Response();
-        });
-
-        $container = new Container();
-        $handler = new Pipeline($container);
-
-        $containerNew = new Container();
-        $middleware->setContainer($containerNew);
-        $fallback->setContainer($containerNew);
-
-        $handler->pipe($middleware);
-        $handler->fallback($fallback);
-
-        $this->assertSame($containerNew, $this->reflectContainer($middleware));
-        $this->assertSame($containerNew, $this->reflectContainer($fallback));
-    }
-
-    private function reflectContainer(ContainerAwareInterface $containerAwareInstance): Container
-    {
-        $r = new ReflectionProperty($containerAwareInstance, 'container');
-        $r->setAccessible(true);
-
-        return $r->getValue($containerAwareInstance);
-    }
-
-    public function testBindLatestRequestInContainer()
-    {
-        $container = new Container();
-
-        $middleware_1 = new CallableMiddleware(function ($request, $handler) use ($container) {
-            $this->assertSame($request, $container->get(ServerRequestInterface::class));
-            $request = $request->withAttribute('foo', true);
-
-            return $handler->handle($request);
-        });
-
-        $middleware_2 = new CallableMiddleware(function ($request, $handler) use ($container) {
-            $this->assertSame($request, $container->get(ServerRequestInterface::class));
-            $request = $request->withAttribute('bar', true);
-
-            return $handler->handle($request);
-        });
-
-        $fallback = new CallableRequestHandler(function ($request) use ($container) {
-            $this->assertSame($request, $container->get(ServerRequestInterface::class));
-            $this->assertTrue($container->get(ServerRequestInterface::class)->getAttribute('foo'));
-            $this->assertTrue($container->get(ServerRequestInterface::class)->getAttribute('bar'));
-
-            return new Response();
-        });
-
-        $handler = new Pipeline($container);
-
-        $handler->pipe($middleware_1);
-        $handler->pipe($middleware_2);
-
-        $handler->fallback($fallback);
-
-        $this->assertFalse($container->has(ServerRequestInterface::class));
-
-        $response = $handler->handle($this->request);
-
-        $this->assertTrue($container->has(ServerRequestInterface::class));
-        $this->assertTrue($container->get(ServerRequestInterface::class)->getAttribute('foo'));
-        $this->assertTrue($container->get(ServerRequestInterface::class)->getAttribute('bar'));
+        return new Pipeline($eventDispatcher);
     }
 }

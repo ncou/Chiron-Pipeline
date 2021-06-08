@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Chiron\Pipeline\Tests\Fixtures;
 
-use Chiron\Container\ContainerAwareInterface;
-use Chiron\Container\ContainerAwareTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class CallableRequestHandler implements ContainerAwareInterface, RequestHandlerInterface
+class CallableRequestHandler implements RequestHandlerInterface
 {
-    use ContainerAwareTrait;
-
     /**
      * @var callable
      */
