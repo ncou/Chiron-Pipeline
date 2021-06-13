@@ -8,9 +8,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * AfterMiddleware event is raised before executing a middleware.
+ * BeforeMiddlewareEvent is raised before executing a middleware.
  */
-final class BeforeMiddleware
+final class BeforeMiddlewareEvent
 {
     /** @var MiddlewareInterface */
     private $middleware;
@@ -18,8 +18,8 @@ final class BeforeMiddleware
     private $request;
 
     /**
-     * @param MiddlewareInterface $middleware Middleware to be executed.
-     * @param ServerRequestInterface $request Request to be passed to the middleware.
+     * @param MiddlewareInterface $middleware
+     * @param ServerRequestInterface $request
      */
     public function __construct(MiddlewareInterface $middleware, ServerRequestInterface $request)
     {
@@ -28,7 +28,7 @@ final class BeforeMiddleware
     }
 
     /**
-     * @return MiddlewareInterface Middleware to be executed.
+     * @return MiddlewareInterface
      */
     public function getMiddleware(): MiddlewareInterface
     {
@@ -36,7 +36,7 @@ final class BeforeMiddleware
     }
 
     /**
-     * @return ServerRequestInterface Request to be passed to the middleware.
+     * @return ServerRequestInterface
      */
     public function getRequest(): ServerRequestInterface
     {
