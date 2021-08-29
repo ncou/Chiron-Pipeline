@@ -50,10 +50,6 @@ final class Pipeline implements RequestHandlerInterface
     /** @var array<MiddlewareInterface> */
     private $middlewares = []; // TODO : renommer la variable en $queue ???
 
-    /** @var callable */
-    //public $beforeMiddleware = null; // TODO : code temporaire à virer !!!
-
-
     public function __construct(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
@@ -111,7 +107,7 @@ final class Pipeline implements RequestHandlerInterface
         // TODO : eventuellement permettre de laisser le fallback à null et dans ce cas lever l'exception qui est présente dans la classe EmptyPipelineHandler directement à la fin de cette méthode. Ca évitera de conserver la classe EmptyPipelineHandler qui sera inutile !!!!
         $this->dispatcher->dispatch(new BeforeHandlerEvent($this->fallback, $request));
         try {
-            return $response = $this->fallback->handle($request);;
+            return $response = $this->fallback->handle($request);
         } finally {
             $this->dispatcher->dispatch(new AfterHandlerEvent($this->fallback, $response ?? null));
         }
