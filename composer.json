@@ -6,14 +6,15 @@
     "homepage": "https://github.com/ncou/Chiron-Pipeline",
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^8.0|^8.1",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "psr/event-dispatcher": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
-        "phpstan/phpstan": "^0.12.0",
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
         "chiron/coding-standard": "^3.0",
         "nyholm/psr7": "^1.3",
         "chiron/event": "^1.0"
