@@ -17,8 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
-use Chiron\Event\EventDispatcher;
-use Chiron\Event\ListenerProvider;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 //https://github.com/zendframework/zend-expressive/blob/master/test/MiddlewareFactoryTest.php#L49
 
@@ -142,8 +141,7 @@ class PipelineTest extends TestCase
 
     private function makePipeline(): Pipeline
     {
-        $listenerProvider = new ListenerProvider();
-        $eventDispatcher = new EventDispatcher($listenerProvider);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         return new Pipeline($eventDispatcher);
     }
