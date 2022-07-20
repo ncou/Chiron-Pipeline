@@ -9,6 +9,7 @@
         "php": "^8.0|^8.1",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
+        "psr/http-message": "^1.0",
         "psr/event-dispatcher": "^1.0"
     },
     "require-dev": {
@@ -34,5 +35,10 @@
         "fix-style": "phpcbf src tests"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }

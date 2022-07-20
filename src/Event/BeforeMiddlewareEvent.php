@@ -13,9 +13,9 @@ use Psr\Http\Server\MiddlewareInterface;
 final class BeforeMiddlewareEvent
 {
     /** @var MiddlewareInterface */
-    private $middleware;
+    private MiddlewareInterface $middleware;
     /** @var ServerRequestInterface */
-    private $request;
+    private ServerRequestInterface $request;
 
     /**
      * @param MiddlewareInterface $middleware

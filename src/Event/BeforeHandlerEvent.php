@@ -13,9 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class BeforeHandlerEvent
 {
     /** @var RequestHandlerInterface */
-    private $handler;
+    private RequestHandlerInterface $handler;
     /** @var ServerRequestInterface */
-    private $request;
+    private ServerRequestInterface $request;
 
     /**
      * @param RequestHandlerInterface $handler

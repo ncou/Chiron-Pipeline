@@ -13,9 +13,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class AfterHandlerEvent
 {
     /** @var RequestHandlerInterface */
-    private $handler;
+    private RequestHandlerInterface $handler;
     /** @var ResponseInterface|null */
-    private $response;
+    private ?ResponseInterface $response;
 
     /**
      * @param RequestHandlerInterface $handler Handler that was executed.

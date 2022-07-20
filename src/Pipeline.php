@@ -16,6 +16,8 @@ use Chiron\Pipeline\Event\AfterMiddlewareEvent;
 use Chiron\Pipeline\Event\BeforeHandlerEvent;
 use Chiron\Pipeline\Event\AfterHandlerEvent;
 
+//https://github.com/Phauthentic/psr-http-middleware-stack/tree/master/src/MiddlewareStack
+
 // TODO : exemple avec les événements !!!!
 //https://github.com/yiisoft/middleware-dispatcher/blob/master/src/MiddlewareStack.php#L98
 
@@ -42,13 +44,13 @@ use Chiron\Pipeline\Event\AfterHandlerEvent;
 final class Pipeline implements RequestHandlerInterface
 {
     /** @var EventDispatcherInterface */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
     /** @var RequestHandlerInterface */
-    private $fallback;
+    private RequestHandlerInterface $fallback;
     /** @var int */
-    private $position = 0; // TODO : renommer la variable en $index !!!!
+    private int $position = 0; // TODO : renommer la variable en $index !!!!
     /** @var array<MiddlewareInterface> */
-    private $middlewares = []; // TODO : renommer la variable en $queue ???
+    private array $middlewares = []; // TODO : renommer la variable en $queue ???
 
     public function __construct(EventDispatcherInterface $dispatcher)
     {
